@@ -5,17 +5,25 @@ import '../../services/asset_service.dart';
 enum AssetStatus { initial, loading, loaded, error }
 
 class AssetState {
-  const AssetState({this.status = AssetStatus.initial, this.items = const [], this.errorMessage});
+  const AssetState({
+    this.status = AssetStatus.initial,
+    this.items = const [],
+    this.errorMessage,
+  });
 
   final AssetStatus status;
   final List<Asset> items;
   final String? errorMessage;
 
-  AssetState copyWith({AssetStatus? status, List<Asset>? items, String? errorMessage}) => AssetState(
-        status: status ?? this.status,
-        items: items ?? this.items,
-        errorMessage: errorMessage,
-      );
+  AssetState copyWith({
+    AssetStatus? status,
+    List<Asset>? items,
+    String? errorMessage,
+  }) => AssetState(
+    status: status ?? this.status,
+    items: items ?? this.items,
+    errorMessage: errorMessage,
+  );
 }
 
 abstract class AssetEvent {}
@@ -47,7 +55,9 @@ class AssetBloc extends Bloc<AssetEvent, AssetState> {
       final items = await _service.getAll();
       emit(state.copyWith(status: AssetStatus.loaded, items: items));
     } catch (e) {
-      emit(state.copyWith(status: AssetStatus.error, errorMessage: e.toString()));
+      emit(
+        state.copyWith(status: AssetStatus.error, errorMessage: e.toString()),
+      );
     }
   }
 
@@ -56,7 +66,9 @@ class AssetBloc extends Bloc<AssetEvent, AssetState> {
       await _service.create(event.asset);
       add(AssetStarted());
     } catch (e) {
-      emit(state.copyWith(status: AssetStatus.error, errorMessage: e.toString()));
+      emit(
+        state.copyWith(status: AssetStatus.error, errorMessage: e.toString()),
+      );
     }
   }
 
@@ -65,7 +77,9 @@ class AssetBloc extends Bloc<AssetEvent, AssetState> {
       await _service.delete(event.id);
       add(AssetStarted());
     } catch (e) {
-      emit(state.copyWith(status: AssetStatus.error, errorMessage: e.toString()));
+      emit(
+        state.copyWith(status: AssetStatus.error, errorMessage: e.toString()),
+      );
     }
   }
 }

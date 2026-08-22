@@ -26,7 +26,12 @@ class _TradingStockPageState extends State<TradingStockPage> {
       child: Scaffold(
         appBar: AppBar(
           title: const Text('Trading Stock (Opal Rough)'),
-          bottom: const TabBar(tabs: [Tab(text: 'Tax years'), Tab(text: 'Pre-business purchases')]),
+          bottom: const TabBar(
+            tabs: [
+              Tab(text: 'Tax years'),
+              Tab(text: 'Pre-business purchases'),
+            ],
+          ),
         ),
         body: BlocBuilder<TradingStockBloc, TradingStockState>(
           builder: (context, state) {
@@ -79,9 +84,12 @@ class _TradingStockPageState extends State<TradingStockPage> {
               children: [
                 DropdownButtonFormField<OpeningValueMethod>(
                   value: openingMethod,
-                  decoration: const InputDecoration(labelText: 'Opening value method'),
+                  decoration: const InputDecoration(
+                    labelText: 'Opening value method',
+                  ),
                   items: [
-                    for (final m in OpeningValueMethod.values) DropdownMenuItem(value: m, child: Text(m.label)),
+                    for (final m in OpeningValueMethod.values)
+                      DropdownMenuItem(value: m, child: Text(m.label)),
                   ],
                   onChanged: (v) => setState(() => openingMethod = v!),
                 ),
@@ -90,21 +98,33 @@ class _TradingStockPageState extends State<TradingStockPage> {
                     controller: openingValueController,
                     decoration: const InputDecoration(
                       labelText: 'Opening value',
-                      helperText: 'First year only - confirm with your accountant, see docs/tax',
+                      helperText:
+                          'First year only - confirm with your accountant, see docs/tax',
                     ),
-                    keyboardType: const TextInputType.numberWithOptions(decimal: true),
-                    validator: (v) => double.tryParse(v ?? '') == null ? 'Enter a number' : null,
+                    keyboardType: const TextInputType.numberWithOptions(
+                      decimal: true,
+                    ),
+                    validator: (v) => double.tryParse(v ?? '') == null
+                        ? 'Enter a number'
+                        : null,
                   ),
                 TextFormField(
                   controller: closingValueController,
-                  decoration: const InputDecoration(labelText: 'Closing value (leave blank until year end)'),
-                  keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                  decoration: const InputDecoration(
+                    labelText: 'Closing value (leave blank until year end)',
+                  ),
+                  keyboardType: const TextInputType.numberWithOptions(
+                    decimal: true,
+                  ),
                 ),
                 DropdownButtonFormField<ClosingValueMethod>(
                   value: closingMethod,
-                  decoration: const InputDecoration(labelText: 'Closing value method'),
+                  decoration: const InputDecoration(
+                    labelText: 'Closing value method',
+                  ),
                   items: [
-                    for (final m in ClosingValueMethod.values) DropdownMenuItem(value: m, child: Text(m.label)),
+                    for (final m in ClosingValueMethod.values)
+                      DropdownMenuItem(value: m, child: Text(m.label)),
                   ],
                   onChanged: (v) => setState(() => closingMethod = v!),
                 ),
@@ -112,18 +132,25 @@ class _TradingStockPageState extends State<TradingStockPage> {
             ),
           ),
           actions: [
-            TextButton(onPressed: () => Navigator.pop(dialogContext), child: const Text('Cancel')),
+            TextButton(
+              onPressed: () => Navigator.pop(dialogContext),
+              child: const Text('Cancel'),
+            ),
             FilledButton(
               onPressed: () {
                 if (!formKey.currentState!.validate()) return;
-                bloc.add(TradingStockYearAdded(
-                  taxYearStart: start,
-                  taxYearEnd: end,
-                  openingValue: double.tryParse(openingValueController.text),
-                  openingValueMethod: openingMethod,
-                  closingValue: double.tryParse(closingValueController.text),
-                  closingValueMethod: closingValueController.text.isEmpty ? null : closingMethod,
-                ));
+                bloc.add(
+                  TradingStockYearAdded(
+                    taxYearStart: start,
+                    taxYearEnd: end,
+                    openingValue: double.tryParse(openingValueController.text),
+                    openingValueMethod: openingMethod,
+                    closingValue: double.tryParse(closingValueController.text),
+                    closingValueMethod: closingValueController.text.isEmpty
+                        ? null
+                        : closingMethod,
+                  ),
+                );
                 Navigator.pop(dialogContext);
               },
               child: const Text('Save'),
@@ -159,28 +186,42 @@ class _TradingStockPageState extends State<TradingStockPage> {
               TextFormField(
                 controller: amountController,
                 decoration: const InputDecoration(labelText: 'Amount'),
-                keyboardType: const TextInputType.numberWithOptions(decimal: true),
-                validator: (v) => double.tryParse(v ?? '') == null ? 'Enter a number' : null,
+                keyboardType: const TextInputType.numberWithOptions(
+                  decimal: true,
+                ),
+                validator: (v) =>
+                    double.tryParse(v ?? '') == null ? 'Enter a number' : null,
               ),
               TextFormField(
                 controller: notesController,
-                decoration: const InputDecoration(labelText: 'Notes (e.g. bank statement reference)'),
+                decoration: const InputDecoration(
+                  labelText: 'Notes (e.g. bank statement reference)',
+                ),
               ),
             ],
           ),
         ),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(dialogContext), child: const Text('Cancel')),
+          TextButton(
+            onPressed: () => Navigator.pop(dialogContext),
+            child: const Text('Cancel'),
+          ),
           FilledButton(
             onPressed: () {
               if (!formKey.currentState!.validate()) return;
-              bloc.add(HistoricalStockPurchaseAdded(HistoricalStockPurchase(
-                id: 0,
-                purchaseDate: purchaseDate,
-                description: descriptionController.text,
-                amount: double.parse(amountController.text),
-                notes: notesController.text.isEmpty ? null : notesController.text,
-              )));
+              bloc.add(
+                HistoricalStockPurchaseAdded(
+                  HistoricalStockPurchase(
+                    id: 0,
+                    purchaseDate: purchaseDate,
+                    description: descriptionController.text,
+                    amount: double.parse(amountController.text),
+                    notes: notesController.text.isEmpty
+                        ? null
+                        : notesController.text,
+                  ),
+                ),
+              );
               Navigator.pop(dialogContext);
             },
             child: const Text('Save'),
@@ -209,7 +250,9 @@ class _YearsTab extends StatelessWidget {
       itemBuilder: (context, index) {
         final y = years[index];
         return ListTile(
-          title: Text('${_date.format(y.taxYearStart)} - ${_date.format(y.taxYearEnd)}'),
+          title: Text(
+            '${_date.format(y.taxYearStart)} - ${_date.format(y.taxYearEnd)}',
+          ),
           subtitle: Text(
             'Opening ${_currency.format(y.openingValue)}'
             '${y.closingValue != null ? ' - Closing ${_currency.format(y.closingValue!)}' : ' - closing not yet set'}'
@@ -240,7 +283,9 @@ class _HistoryTab extends StatelessWidget {
         final p = purchases[index];
         return ListTile(
           title: Text(p.description),
-          subtitle: Text('${_date.format(p.purchaseDate)}${p.notes != null ? ' - ${p.notes}' : ''}'),
+          subtitle: Text(
+            '${_date.format(p.purchaseDate)}${p.notes != null ? ' - ${p.notes}' : ''}',
+          ),
           trailing: Text(_currency.format(p.amount)),
         );
       },

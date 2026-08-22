@@ -39,30 +39,34 @@ class Asset {
   final String? notes;
 
   factory Asset.fromJson(Map<String, dynamic> json) => Asset(
-        id: json['id'] as int,
-        businessPurchaseId: json['businessPurchaseId'] as int?,
-        description: json['description'] as String,
-        purchaseDate: DateTime.parse(json['purchaseDate'] as String),
-        costExclGst: (json['costExclGst'] as num).toDouble(),
-        depreciationMethod: DepreciationMethod.fromWire(json['depreciationMethod'] as String),
-        depreciationRate: (json['depreciationRate'] as num).toDouble(),
-        isLowValueWriteoff: json['isLowValueWriteoff'] as bool,
-        disposalDate: json['disposalDate'] == null ? null : DateTime.parse(json['disposalDate'] as String),
-        disposalAmount: (json['disposalAmount'] as num?)?.toDouble(),
-        notes: json['notes'] as String?,
-      );
+    id: json['id'] as int,
+    businessPurchaseId: json['businessPurchaseId'] as int?,
+    description: json['description'] as String,
+    purchaseDate: DateTime.parse(json['purchaseDate'] as String),
+    costExclGst: (json['costExclGst'] as num).toDouble(),
+    depreciationMethod: DepreciationMethod.fromWire(
+      json['depreciationMethod'] as String,
+    ),
+    depreciationRate: (json['depreciationRate'] as num).toDouble(),
+    isLowValueWriteoff: json['isLowValueWriteoff'] as bool,
+    disposalDate: json['disposalDate'] == null
+        ? null
+        : DateTime.parse(json['disposalDate'] as String),
+    disposalAmount: (json['disposalAmount'] as num?)?.toDouble(),
+    notes: json['notes'] as String?,
+  );
 
   Map<String, dynamic> toRequestJson() => {
-        'businessPurchaseId': businessPurchaseId,
-        'description': description,
-        'purchaseDate': purchaseDate.toIso8601String().substring(0, 10),
-        'costExclGst': costExclGst,
-        'depreciationMethod': depreciationMethod.wireValue,
-        'depreciationRate': depreciationRate,
-        'disposalDate': disposalDate?.toIso8601String().substring(0, 10),
-        'disposalAmount': disposalAmount,
-        'notes': notes,
-      };
+    'businessPurchaseId': businessPurchaseId,
+    'description': description,
+    'purchaseDate': purchaseDate.toIso8601String().substring(0, 10),
+    'costExclGst': costExclGst,
+    'depreciationMethod': depreciationMethod.wireValue,
+    'depreciationRate': depreciationRate,
+    'disposalDate': disposalDate?.toIso8601String().substring(0, 10),
+    'disposalAmount': disposalAmount,
+    'notes': notes,
+  };
 }
 
 class AssetDepreciationYear {
@@ -86,7 +90,8 @@ class AssetDepreciationYear {
   final double closingValue;
   final int monthsOwnedThisYear;
 
-  factory AssetDepreciationYear.fromJson(Map<String, dynamic> json) => AssetDepreciationYear(
+  factory AssetDepreciationYear.fromJson(Map<String, dynamic> json) =>
+      AssetDepreciationYear(
         id: json['id'] as int,
         assetId: json['assetId'] as int,
         taxYearStart: DateTime.parse(json['taxYearStart'] as String),

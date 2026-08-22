@@ -27,7 +27,10 @@ class _IncomeListPageState extends State<IncomeListPage> {
       appBar: AppBar(
         title: const Text('Income'),
         actions: [
-          IconButton(icon: const Icon(Icons.add), onPressed: () => _showAddDialog(context)),
+          IconButton(
+            icon: const Icon(Icons.add),
+            onPressed: () => _showAddDialog(context),
+          ),
         ],
       ),
       body: BlocBuilder<IncomeBloc, IncomeState>(
@@ -39,7 +42,9 @@ class _IncomeListPageState extends State<IncomeListPage> {
             return Center(child: Text('Error: ${state.errorMessage}'));
           }
           if (state.items.isEmpty) {
-            return const Center(child: Text('No income entries yet. Tap + to add one.'));
+            return const Center(
+              child: Text('No income entries yet. Tap + to add one.'),
+            );
           }
           return ListView.separated(
             itemCount: state.items.length,
@@ -48,17 +53,25 @@ class _IncomeListPageState extends State<IncomeListPage> {
               final entry = state.items[index];
               return ListTile(
                 leading: CircleAvatar(
-                  child: Icon(entry.incomeStream == IncomeStream.opalSales ? Icons.diamond_outlined : Icons.code),
+                  child: Icon(
+                    entry.incomeStream == IncomeStream.opalSales
+                        ? Icons.diamond_outlined
+                        : Icons.code,
+                  ),
                 ),
                 title: Text(entry.description),
-                subtitle: Text('${entry.incomeStream.label} - ${_date.format(entry.entryDate)}'),
+                subtitle: Text(
+                  '${entry.incomeStream.label} - ${_date.format(entry.entryDate)}',
+                ),
                 trailing: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Text(_currency.format(entry.totalAmount)),
                     IconButton(
                       icon: const Icon(Icons.delete_outline),
-                      onPressed: () => context.read<IncomeBloc>().add(IncomeEntryDeleted(entry.id)),
+                      onPressed: () => context.read<IncomeBloc>().add(
+                        IncomeEntryDeleted(entry.id),
+                      ),
                     ),
                   ],
                 ),
@@ -93,52 +106,77 @@ class _IncomeListPageState extends State<IncomeListPage> {
                 children: [
                   DropdownButtonFormField<IncomeStream>(
                     value: stream,
-                    decoration: const InputDecoration(labelText: 'Income stream'),
+                    decoration: const InputDecoration(
+                      labelText: 'Income stream',
+                    ),
                     items: [
-                      for (final s in IncomeStream.values) DropdownMenuItem(value: s, child: Text(s.label)),
+                      for (final s in IncomeStream.values)
+                        DropdownMenuItem(value: s, child: Text(s.label)),
                     ],
                     onChanged: (v) => setState(() => stream = v!),
                   ),
                   TextFormField(
                     controller: descriptionController,
                     decoration: const InputDecoration(labelText: 'Description'),
-                    validator: (v) => (v == null || v.isEmpty) ? 'Required' : null,
+                    validator: (v) =>
+                        (v == null || v.isEmpty) ? 'Required' : null,
                   ),
                   TextFormField(
                     controller: invoiceRefController,
-                    decoration: const InputDecoration(labelText: 'Invoice reference (optional)'),
+                    decoration: const InputDecoration(
+                      labelText: 'Invoice reference (optional)',
+                    ),
                   ),
                   TextFormField(
                     controller: amountController,
-                    decoration: const InputDecoration(labelText: 'Amount (excl. GST)'),
-                    keyboardType: const TextInputType.numberWithOptions(decimal: true),
-                    validator: (v) => double.tryParse(v ?? '') == null ? 'Enter a number' : null,
+                    decoration: const InputDecoration(
+                      labelText: 'Amount (excl. GST)',
+                    ),
+                    keyboardType: const TextInputType.numberWithOptions(
+                      decimal: true,
+                    ),
+                    validator: (v) => double.tryParse(v ?? '') == null
+                        ? 'Enter a number'
+                        : null,
                   ),
                   TextFormField(
                     controller: gstController,
                     decoration: const InputDecoration(labelText: 'GST amount'),
-                    keyboardType: const TextInputType.numberWithOptions(decimal: true),
-                    validator: (v) => double.tryParse(v ?? '') == null ? 'Enter a number' : null,
+                    keyboardType: const TextInputType.numberWithOptions(
+                      decimal: true,
+                    ),
+                    validator: (v) => double.tryParse(v ?? '') == null
+                        ? 'Enter a number'
+                        : null,
                   ),
                 ],
               ),
             ),
           ),
           actions: [
-            TextButton(onPressed: () => Navigator.pop(dialogContext), child: const Text('Cancel')),
+            TextButton(
+              onPressed: () => Navigator.pop(dialogContext),
+              child: const Text('Cancel'),
+            ),
             FilledButton(
               onPressed: () {
                 if (!formKey.currentState!.validate()) return;
-                bloc.add(IncomeEntryAdded(IncomeEntry(
-                  id: 0,
-                  incomeStream: stream,
-                  entryDate: entryDate,
-                  description: descriptionController.text,
-                  invoiceReference: invoiceRefController.text.isEmpty ? null : invoiceRefController.text,
-                  amountExclGst: double.parse(amountController.text),
-                  gstAmount: double.parse(gstController.text),
-                  totalAmount: 0,
-                )));
+                bloc.add(
+                  IncomeEntryAdded(
+                    IncomeEntry(
+                      id: 0,
+                      incomeStream: stream,
+                      entryDate: entryDate,
+                      description: descriptionController.text,
+                      invoiceReference: invoiceRefController.text.isEmpty
+                          ? null
+                          : invoiceRefController.text,
+                      amountExclGst: double.parse(amountController.text),
+                      gstAmount: double.parse(gstController.text),
+                      totalAmount: 0,
+                    ),
+                  ),
+                );
                 Navigator.pop(dialogContext);
               },
               child: const Text('Add'),

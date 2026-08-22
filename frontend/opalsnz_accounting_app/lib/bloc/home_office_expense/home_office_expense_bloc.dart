@@ -19,12 +19,11 @@ class HomeOfficeExpenseState {
     HomeOfficeExpenseStatus? status,
     List<HomeOfficeExpenseEntry>? items,
     String? errorMessage,
-  }) =>
-      HomeOfficeExpenseState(
-        status: status ?? this.status,
-        items: items ?? this.items,
-        errorMessage: errorMessage,
-      );
+  }) => HomeOfficeExpenseState(
+    status: status ?? this.status,
+    items: items ?? this.items,
+    errorMessage: errorMessage,
+  );
 }
 
 abstract class HomeOfficeExpenseEvent {}
@@ -41,7 +40,8 @@ class HomeOfficeExpenseDeleted extends HomeOfficeExpenseEvent {
   final int id;
 }
 
-class HomeOfficeExpenseBloc extends Bloc<HomeOfficeExpenseEvent, HomeOfficeExpenseState> {
+class HomeOfficeExpenseBloc
+    extends Bloc<HomeOfficeExpenseEvent, HomeOfficeExpenseState> {
   HomeOfficeExpenseBloc(this._service) : super(const HomeOfficeExpenseState()) {
     on<HomeOfficeExpenseStarted>(_onStarted);
     on<HomeOfficeExpenseAdded>(_onAdded);
@@ -50,31 +50,57 @@ class HomeOfficeExpenseBloc extends Bloc<HomeOfficeExpenseEvent, HomeOfficeExpen
 
   final HomeOfficeExpenseService _service;
 
-  Future<void> _onStarted(HomeOfficeExpenseStarted event, Emitter<HomeOfficeExpenseState> emit) async {
+  Future<void> _onStarted(
+    HomeOfficeExpenseStarted event,
+    Emitter<HomeOfficeExpenseState> emit,
+  ) async {
     emit(state.copyWith(status: HomeOfficeExpenseStatus.loading));
     try {
       final items = await _service.getAll();
-      emit(state.copyWith(status: HomeOfficeExpenseStatus.loaded, items: items));
+      emit(
+        state.copyWith(status: HomeOfficeExpenseStatus.loaded, items: items),
+      );
     } catch (e) {
-      emit(state.copyWith(status: HomeOfficeExpenseStatus.error, errorMessage: e.toString()));
+      emit(
+        state.copyWith(
+          status: HomeOfficeExpenseStatus.error,
+          errorMessage: e.toString(),
+        ),
+      );
     }
   }
 
-  Future<void> _onAdded(HomeOfficeExpenseAdded event, Emitter<HomeOfficeExpenseState> emit) async {
+  Future<void> _onAdded(
+    HomeOfficeExpenseAdded event,
+    Emitter<HomeOfficeExpenseState> emit,
+  ) async {
     try {
       await _service.create(event.request);
       add(HomeOfficeExpenseStarted());
     } catch (e) {
-      emit(state.copyWith(status: HomeOfficeExpenseStatus.error, errorMessage: e.toString()));
+      emit(
+        state.copyWith(
+          status: HomeOfficeExpenseStatus.error,
+          errorMessage: e.toString(),
+        ),
+      );
     }
   }
 
-  Future<void> _onDeleted(HomeOfficeExpenseDeleted event, Emitter<HomeOfficeExpenseState> emit) async {
+  Future<void> _onDeleted(
+    HomeOfficeExpenseDeleted event,
+    Emitter<HomeOfficeExpenseState> emit,
+  ) async {
     try {
       await _service.delete(event.id);
       add(HomeOfficeExpenseStarted());
     } catch (e) {
-      emit(state.copyWith(status: HomeOfficeExpenseStatus.error, errorMessage: e.toString()));
+      emit(
+        state.copyWith(
+          status: HomeOfficeExpenseStatus.error,
+          errorMessage: e.toString(),
+        ),
+      );
     }
   }
 }

@@ -19,12 +19,11 @@ class BusinessPurchaseState {
     BusinessPurchaseStatus? status,
     List<BusinessPurchase>? items,
     String? errorMessage,
-  }) =>
-      BusinessPurchaseState(
-        status: status ?? this.status,
-        items: items ?? this.items,
-        errorMessage: errorMessage,
-      );
+  }) => BusinessPurchaseState(
+    status: status ?? this.status,
+    items: items ?? this.items,
+    errorMessage: errorMessage,
+  );
 }
 
 abstract class BusinessPurchaseEvent {}
@@ -41,7 +40,8 @@ class BusinessPurchaseDeleted extends BusinessPurchaseEvent {
   final int id;
 }
 
-class BusinessPurchaseBloc extends Bloc<BusinessPurchaseEvent, BusinessPurchaseState> {
+class BusinessPurchaseBloc
+    extends Bloc<BusinessPurchaseEvent, BusinessPurchaseState> {
   BusinessPurchaseBloc(this._service) : super(const BusinessPurchaseState()) {
     on<BusinessPurchaseStarted>(_onStarted);
     on<BusinessPurchaseAdded>(_onAdded);
@@ -50,31 +50,55 @@ class BusinessPurchaseBloc extends Bloc<BusinessPurchaseEvent, BusinessPurchaseS
 
   final BusinessPurchaseService _service;
 
-  Future<void> _onStarted(BusinessPurchaseStarted event, Emitter<BusinessPurchaseState> emit) async {
+  Future<void> _onStarted(
+    BusinessPurchaseStarted event,
+    Emitter<BusinessPurchaseState> emit,
+  ) async {
     emit(state.copyWith(status: BusinessPurchaseStatus.loading));
     try {
       final items = await _service.getAll();
       emit(state.copyWith(status: BusinessPurchaseStatus.loaded, items: items));
     } catch (e) {
-      emit(state.copyWith(status: BusinessPurchaseStatus.error, errorMessage: e.toString()));
+      emit(
+        state.copyWith(
+          status: BusinessPurchaseStatus.error,
+          errorMessage: e.toString(),
+        ),
+      );
     }
   }
 
-  Future<void> _onAdded(BusinessPurchaseAdded event, Emitter<BusinessPurchaseState> emit) async {
+  Future<void> _onAdded(
+    BusinessPurchaseAdded event,
+    Emitter<BusinessPurchaseState> emit,
+  ) async {
     try {
       await _service.create(event.purchase);
       add(BusinessPurchaseStarted());
     } catch (e) {
-      emit(state.copyWith(status: BusinessPurchaseStatus.error, errorMessage: e.toString()));
+      emit(
+        state.copyWith(
+          status: BusinessPurchaseStatus.error,
+          errorMessage: e.toString(),
+        ),
+      );
     }
   }
 
-  Future<void> _onDeleted(BusinessPurchaseDeleted event, Emitter<BusinessPurchaseState> emit) async {
+  Future<void> _onDeleted(
+    BusinessPurchaseDeleted event,
+    Emitter<BusinessPurchaseState> emit,
+  ) async {
     try {
       await _service.delete(event.id);
       add(BusinessPurchaseStarted());
     } catch (e) {
-      emit(state.copyWith(status: BusinessPurchaseStatus.error, errorMessage: e.toString()));
+      emit(
+        state.copyWith(
+          status: BusinessPurchaseStatus.error,
+          errorMessage: e.toString(),
+        ),
+      );
     }
   }
 }

@@ -12,7 +12,7 @@ vs dropped.
 - **Backend** — ASP.NET Core 10 API (`/backend`)
 - **Frontend** — Flutter web application (`/frontend`)
 - **Database** — MySQL configuration (`/db`)
-- **Infrastructure** — Deployment scripts and configuration (`/infrastructure`) — added in Phase 6
+- **Infrastructure** — Deployment scripts and configuration (`/infrastructure`)
 - **docs** — Tax cheatsheets and architecture notes (`/docs`)
 
 See [plan.md](plan.md) for the full build plan, decisions, and phase breakdown.

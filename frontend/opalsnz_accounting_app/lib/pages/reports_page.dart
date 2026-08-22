@@ -25,7 +25,9 @@ class _ReportsPageState extends State<ReportsPage> {
   Widget build(BuildContext context) {
     final (start, end) = TaxYear.current();
     return Scaffold(
-      appBar: AppBar(title: Text('Reports - tax year ${start.year}/${end.year}')),
+      appBar: AppBar(
+        title: Text('Reports - tax year ${start.year}/${end.year}'),
+      ),
       body: BlocBuilder<ReportBloc, ReportState>(
         builder: (context, state) {
           if (state.status != ReportStatus.loaded) {
@@ -40,26 +42,53 @@ class _ReportsPageState extends State<ReportsPage> {
                 rows: [
                   for (final t in state.incomeSummary!.streamTotals)
                     (t.incomeStream.label, _currency.format(t.total)),
-                  ('GST collected', _currency.format(state.incomeSummary!.totalGst)),
-                  ('Grand total', _currency.format(state.incomeSummary!.grandTotal)),
+                  (
+                    'GST collected',
+                    _currency.format(state.incomeSummary!.totalGst),
+                  ),
+                  (
+                    'Grand total',
+                    _currency.format(state.incomeSummary!.grandTotal),
+                  ),
                 ],
               ),
               _ReportSection(
                 title: 'Home office claimable',
                 rows: [
                   for (final c in state.homeOfficeSummary!.categoryTotals)
-                    (c.expenseCategoryName, _currency.format(c.claimableAmount)),
-                  ('Total claimable GST', _currency.format(state.homeOfficeSummary!.totalClaimableGst)),
-                  ('Total claimable', _currency.format(state.homeOfficeSummary!.totalClaimableAmount)),
+                    (
+                      c.expenseCategoryName,
+                      _currency.format(c.claimableAmount),
+                    ),
+                  (
+                    'Total claimable GST',
+                    _currency.format(
+                      state.homeOfficeSummary!.totalClaimableGst,
+                    ),
+                  ),
+                  (
+                    'Total claimable',
+                    _currency.format(
+                      state.homeOfficeSummary!.totalClaimableAmount,
+                    ),
+                  ),
                 ],
               ),
               _ReportSection(
                 title: 'GST (year to date)',
                 rows: [
-                  ('Output GST (collected on sales)', _currency.format(state.gstPeriodSummary!.outputGst)),
-                  ('Input GST (claimed on expenses)', _currency.format(state.gstPeriodSummary!.inputGst)),
                   (
-                    state.gstPeriodSummary!.netGst >= 0 ? 'Net GST payable' : 'Net GST refund',
+                    'Output GST (collected on sales)',
+                    _currency.format(state.gstPeriodSummary!.outputGst),
+                  ),
+                  (
+                    'Input GST (claimed on expenses)',
+                    _currency.format(state.gstPeriodSummary!.inputGst),
+                  ),
+                  (
+                    state.gstPeriodSummary!.netGst >= 0
+                        ? 'Net GST payable'
+                        : 'Net GST refund',
                     _currency.format(state.gstPeriodSummary!.netGst.abs()),
                   ),
                 ],
@@ -67,8 +96,17 @@ class _ReportsPageState extends State<ReportsPage> {
               _ReportSection(
                 title: 'Depreciation schedule',
                 rows: [
-                  for (final l in state.depreciationSchedule!.lines) (l.assetDescription, _currency.format(l.depreciationAmount)),
-                  ('Total depreciation', _currency.format(state.depreciationSchedule!.totalDepreciation)),
+                  for (final l in state.depreciationSchedule!.lines)
+                    (
+                      l.assetDescription,
+                      _currency.format(l.depreciationAmount),
+                    ),
+                  (
+                    'Total depreciation',
+                    _currency.format(
+                      state.depreciationSchedule!.totalDepreciation,
+                    ),
+                  ),
                 ],
               ),
             ],

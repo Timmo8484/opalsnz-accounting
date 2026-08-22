@@ -19,8 +19,11 @@ class AssetService {
   Future<void> delete(int id) => _client.delete('/api/assets/$id');
 
   Future<List<AssetDepreciationYear>> getDepreciationYears(int assetId) async {
-    final json = await _client.get('/api/assets/$assetId/depreciation-years') as List;
-    return json.map((e) => AssetDepreciationYear.fromJson(e as Map<String, dynamic>)).toList();
+    final json =
+        await _client.get('/api/assets/$assetId/depreciation-years') as List;
+    return json
+        .map((e) => AssetDepreciationYear.fromJson(e as Map<String, dynamic>))
+        .toList();
   }
 
   Future<AssetDepreciationYear> createDepreciationYear({
@@ -29,12 +32,15 @@ class AssetService {
     required DateTime taxYearEnd,
     int monthsOwnedThisYear = 12,
   }) async {
-    final json = await _client.post('/api/assets/depreciation-years', body: {
-      'assetId': assetId,
-      'taxYearStart': taxYearStart.toIso8601String().substring(0, 10),
-      'taxYearEnd': taxYearEnd.toIso8601String().substring(0, 10),
-      'monthsOwnedThisYear': monthsOwnedThisYear,
-    });
+    final json = await _client.post(
+      '/api/assets/depreciation-years',
+      body: {
+        'assetId': assetId,
+        'taxYearStart': taxYearStart.toIso8601String().substring(0, 10),
+        'taxYearEnd': taxYearEnd.toIso8601String().substring(0, 10),
+        'monthsOwnedThisYear': monthsOwnedThisYear,
+      },
+    );
     return AssetDepreciationYear.fromJson(json as Map<String, dynamic>);
   }
 }

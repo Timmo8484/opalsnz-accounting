@@ -9,10 +9,8 @@ class AuthState {
   final AuthStatus status;
   final String? errorMessage;
 
-  AuthState copyWith({AuthStatus? status, String? errorMessage}) => AuthState(
-        status: status ?? this.status,
-        errorMessage: errorMessage,
-      );
+  AuthState copyWith({AuthStatus? status, String? errorMessage}) =>
+      AuthState(status: status ?? this.status, errorMessage: errorMessage);
 }
 
 abstract class AuthEvent {}
@@ -38,17 +36,34 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
   Future<void> _onStarted(AuthStarted event, Emitter<AuthState> emit) async {
     final loggedIn = await _authService.isLoggedIn();
-    emit(state.copyWith(status: loggedIn ? AuthStatus.authenticated : AuthStatus.unauthenticated));
+    emit(
+      state.copyWith(
+        status: loggedIn
+            ? AuthStatus.authenticated
+            : AuthStatus.unauthenticated,
+      ),
+    );
   }
 
-  Future<void> _onLoginRequested(AuthLoginRequested event, Emitter<AuthState> emit) async {
+  Future<void> _onLoginRequested(
+    AuthLoginRequested event,
+    Emitter<AuthState> emit,
+  ) async {
     final success = await _authService.login(event.username, event.password);
-    emit(success
-        ? state.copyWith(status: AuthStatus.authenticated)
-        : state.copyWith(status: AuthStatus.unauthenticated, errorMessage: 'Invalid username or password'));
+    emit(
+      success
+          ? state.copyWith(status: AuthStatus.authenticated)
+          : state.copyWith(
+              status: AuthStatus.unauthenticated,
+              errorMessage: 'Invalid username or password',
+            ),
+    );
   }
 
-  Future<void> _onLoggedOut(AuthLoggedOut event, Emitter<AuthState> emit) async {
+  Future<void> _onLoggedOut(
+    AuthLoggedOut event,
+    Emitter<AuthState> emit,
+  ) async {
     await _authService.logout();
     emit(state.copyWith(status: AuthStatus.unauthenticated));
   }

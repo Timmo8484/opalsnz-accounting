@@ -35,24 +35,24 @@ class IncomeEntry {
   final String? notes;
 
   factory IncomeEntry.fromJson(Map<String, dynamic> json) => IncomeEntry(
-        id: json['id'] as int,
-        incomeStream: IncomeStream.fromWire(json['incomeStream'] as String),
-        entryDate: DateTime.parse(json['entryDate'] as String),
-        description: json['description'] as String,
-        invoiceReference: json['invoiceReference'] as String?,
-        amountExclGst: (json['amountExclGst'] as num).toDouble(),
-        gstAmount: (json['gstAmount'] as num).toDouble(),
-        totalAmount: (json['totalAmount'] as num).toDouble(),
-        notes: json['notes'] as String?,
-      );
+    id: json['id'] as int,
+    incomeStream: IncomeStream.fromWire(json['incomeStream'] as String),
+    entryDate: DateTime.parse(json['entryDate'] as String),
+    description: json['description'] as String,
+    invoiceReference: json['invoiceReference'] as String?,
+    amountExclGst: (json['amountExclGst'] as num).toDouble(),
+    gstAmount: (json['gstAmount'] as num).toDouble(),
+    totalAmount: (json['totalAmount'] as num).toDouble(),
+    notes: json['notes'] as String?,
+  );
 
   Map<String, dynamic> toRequestJson() => {
-        'incomeStream': incomeStream.wireValue,
-        'entryDate': entryDate.toIso8601String().substring(0, 10),
-        'description': description,
-        'invoiceReference': invoiceReference,
-        'amountExclGst': amountExclGst,
-        'gstAmount': gstAmount,
-        'notes': notes,
-      };
+    'incomeStream': incomeStream.wireValue,
+    'entryDate': entryDate.toIso8601String().substring(0, 10),
+    'description': description,
+    'invoiceReference': invoiceReference,
+    'amountExclGst': amountExclGst,
+    'gstAmount': gstAmount,
+    'notes': notes,
+  };
 }

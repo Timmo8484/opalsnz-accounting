@@ -94,13 +94,27 @@ Business Purchases, Assets & Depreciation, Trading Stock, Reports, Settings), `A
 all running together, login page renders correctly in a real browser (screenshot-verified). Full
 click-through (typing into fields, submitting forms) wasn't automatable from this session — Flutter's
 CanvasKit web renderer doesn't expose real DOM inputs for automation tools without enabling in-app
-accessibility first. **Manual click-through is the first thing to do in Phase 7.**
+accessibility first — **however, you logged in and navigated the app manually in a real browser during
+development and it worked** (Settings page correctly showed the 5 seeded categories with right
+claim %/GST flags), so the remaining click-through in Phase 7 is really just the rest of the flows.
 CSV/PDF export UI, and edit (vs. add/delete) forms were not built — see Further considerations.
 
-### Phase 6 — Infrastructure & deployment
-Docker Compose (dev + production) reusing opalsnz's nginx/Docker patterns, deployed to existing
-Proxmox/Windows Server infra. Decide access path (internal-only/VPN recommended given sensitive
-financial data vs a public subdomain).
+### Phase 6 — Infrastructure & deployment ✅
+`backend/Dockerfile` (multi-stage ASP.NET Core 10 build, non-root user) and
+`backend/docker-compose.backend.production.yml`; `frontend/opalsnz_accounting_app/Dockerfile`
+(multi-stage Flutter web build served by nginx, `API_BASE_URL` baked in at build time via
+`--build-arg`) and `frontend/docker-compose.frontend.production.yml`; `infrastructure/README.md` with
+the deployment guide, secrets checklist, and recommendation to keep this **internal-only/VPN** rather
+than a public subdomain given it holds personal financial data.
+
+Both Dockerfiles were actually built and the backend image was smoke-tested locally (attached to the
+dev DB's Docker network) — this caught a real bug: the secure-by-default auth fallback policy from
+Phase 4 was also blocking `/health` with 401, which would have made the container's own healthcheck
+fail forever. Fixed with `.AllowAnonymous()` on the health check endpoint.
+
+Not done (see Further considerations): an actual production MySQL Compose file (only the dev one
+exists), backup scripts, and the real deployment to the Proxmox/Windows Server boxes themselves
+(no access to that infra from this session — the artifacts and guide are ready for you to run there).
 
 ### Phase 7 — Final verification
 **Manual click-through of the running app is the priority here** (not done yet — see Phase 5 note):
@@ -119,9 +133,11 @@ against the finished app.
 
 ## Open questions (revisit later, not blocking)
 
-1. Deployment access path — internal-only/VPN vs public subdomain.
+1. Deployment access path — internal-only/VPN recommended (see infrastructure/README.md); final choice of VPN/reverse-proxy mechanism still yours to make.
 2. PDF export for accountant handoff — stretch goal, not committed.
 3. Trading stock register is now designed (see Phase 3 and [docs/tax/trading-stock-and-startup-assets.md](docs/tax/trading-stock-and-startup-assets.md)), but the **opening value figure and valuation method** (cost vs market value) for the ~$50k of pre-business opal rough still needs your accountant's confirmation before that first `TradingStockYear` record is entered — not blocking the build, just don't enter a real opening value until confirmed.
 4. CSV export endpoints (Reports) were not built in Phase 4 — add alongside/after the frontend Reports page in Phase 5 once the exact export shape needed is clearer.
 5. Frontend "edit" forms weren't built (only add/delete) — the API supports `PUT` on every entity, so this is a frontend-only gap to close once the basic flows are confirmed useful.
+6. Production MySQL Compose file and backup scripts weren't created — only the dev DB compose exists; mirror opalsnz's `infrastructure/scripts/backup*` pattern once the production DB location (shared opalsnz server vs dedicated container) is decided.
+7. Actual deployment to the Proxmox/Windows Server boxes wasn't performed (no access from this session) — `infrastructure/README.md` has the steps to run there.
 6. CSV export UI (frontend) still pending on item 4 above.

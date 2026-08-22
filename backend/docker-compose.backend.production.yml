@@ -1,0 +1,39 @@
+services:
+  # .NET Backend API - connects to the existing MySQL server on the shared network,
+  # same pattern as opalsnz (docker-compose.backend.production.*.yml).
+  backend:
+    container_name: opalsnz-accounting-backend
+    image: opalsnz-accounting-backend:latest
+    restart: unless-stopped
+
+    environment:
+      ASPNETCORE_ENVIRONMENT: ${ASPNETCORE_ENVIRONMENT:-Production}
+      ASPNETCORE_URLS: http://+:8080
+      TZ: Pacific/Auckland
+
+      ConnectionStrings__DefaultConnection: "Server=${DATABASE_HOST};Port=${DATABASE_PORT:-3306};Database=${DATABASE_NAME};Uid=${DATABASE_USERNAME};Pwd=${DATABASE_PASSWORD};CharSet=utf8mb4;"
+      Jwt__SigningKey: ${JWT_SIGNING_KEY}
+      Jwt__Issuer: ${JWT_ISSUER:-opalsnz-accounting}
+      Jwt__Audience: ${JWT_AUDIENCE:-opalsnz-accounting-app}
+      SingleUser__Username: ${SINGLE_USER_USERNAME}
+      SingleUser__PasswordHash: ${SINGLE_USER_PASSWORD_HASH}
+      Cors__AllowedOrigins__0: ${FRONTEND_ORIGIN}
+
+    ports:
+      - "8081:8080"
+
+    networks:
+      - opalsnz-accounting-network
+
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+networks:
+  opalsnz-accounting-network:
+    external: true
+
+# Note: assumes MySQL is already reachable on this network (either the shared opalsnz MySQL
+# server with a separate schema, or a dedicated container) - see infrastructure/README.md.

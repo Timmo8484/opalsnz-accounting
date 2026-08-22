@@ -8,7 +8,8 @@ enum PurchaseType {
   final String wireValue;
   final String label;
 
-  static PurchaseType fromWire(String value) => PurchaseType.values.firstWhere((e) => e.wireValue == value);
+  static PurchaseType fromWire(String value) =>
+      PurchaseType.values.firstWhere((e) => e.wireValue == value);
 }
 
 class BusinessPurchase {
@@ -36,7 +37,8 @@ class BusinessPurchase {
   final bool isTradingStockPurchase;
   final String? notes;
 
-  factory BusinessPurchase.fromJson(Map<String, dynamic> json) => BusinessPurchase(
+  factory BusinessPurchase.fromJson(Map<String, dynamic> json) =>
+      BusinessPurchase(
         id: json['id'] as int,
         purchaseDate: DateTime.parse(json['purchaseDate'] as String),
         purchaseType: PurchaseType.fromWire(json['purchaseType'] as String),
@@ -50,14 +52,14 @@ class BusinessPurchase {
       );
 
   Map<String, dynamic> toRequestJson() => {
-        'purchaseDate': purchaseDate.toIso8601String().substring(0, 10),
-        'purchaseType': purchaseType.wireValue,
-        'description': description,
-        'supplier': supplier,
-        'amountExclGst': amountExclGst,
-        'gstAmount': gstAmount,
-        'isCapitalAsset': isCapitalAsset,
-        'isTradingStockPurchase': isTradingStockPurchase,
-        'notes': notes,
-      };
+    'purchaseDate': purchaseDate.toIso8601String().substring(0, 10),
+    'purchaseType': purchaseType.wireValue,
+    'description': description,
+    'supplier': supplier,
+    'amountExclGst': amountExclGst,
+    'gstAmount': gstAmount,
+    'isCapitalAsset': isCapitalAsset,
+    'isTradingStockPurchase': isTradingStockPurchase,
+    'notes': notes,
+  };
 }

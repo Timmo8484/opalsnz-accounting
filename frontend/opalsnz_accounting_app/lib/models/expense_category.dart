@@ -13,7 +13,8 @@ class ExpenseCategory {
   final bool hasGst;
   final bool isActive;
 
-  factory ExpenseCategory.fromJson(Map<String, dynamic> json) => ExpenseCategory(
+  factory ExpenseCategory.fromJson(Map<String, dynamic> json) =>
+      ExpenseCategory(
         id: json['id'] as int,
         name: json['name'] as String,
         defaultClaimPercent: (json['defaultClaimPercent'] as num).toDouble(),
@@ -22,9 +23,9 @@ class ExpenseCategory {
       );
 
   Map<String, dynamic> toRequestJson() => {
-        'name': name,
-        'defaultClaimPercent': defaultClaimPercent,
-        'hasGst': hasGst,
-        'isActive': isActive,
-      };
+    'name': name,
+    'defaultClaimPercent': defaultClaimPercent,
+    'hasGst': hasGst,
+    'isActive': isActive,
+  };
 }

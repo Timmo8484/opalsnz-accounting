@@ -22,13 +22,12 @@ class TradingStockState {
     List<TradingStockYear>? years,
     List<HistoricalStockPurchase>? historicalPurchases,
     String? errorMessage,
-  }) =>
-      TradingStockState(
-        status: status ?? this.status,
-        years: years ?? this.years,
-        historicalPurchases: historicalPurchases ?? this.historicalPurchases,
-        errorMessage: errorMessage,
-      );
+  }) => TradingStockState(
+    status: status ?? this.status,
+    years: years ?? this.years,
+    historicalPurchases: historicalPurchases ?? this.historicalPurchases,
+    errorMessage: errorMessage,
+  );
 }
 
 abstract class TradingStockEvent {}
@@ -59,7 +58,8 @@ class HistoricalStockPurchaseAdded extends TradingStockEvent {
 }
 
 class TradingStockBloc extends Bloc<TradingStockEvent, TradingStockState> {
-  TradingStockBloc(this._tradingStockService, this._historyService) : super(const TradingStockState()) {
+  TradingStockBloc(this._tradingStockService, this._historyService)
+    : super(const TradingStockState()) {
     on<TradingStockStarted>(_onStarted);
     on<TradingStockYearAdded>(_onYearAdded);
     on<HistoricalStockPurchaseAdded>(_onHistoricalAdded);
@@ -68,18 +68,35 @@ class TradingStockBloc extends Bloc<TradingStockEvent, TradingStockState> {
   final TradingStockService _tradingStockService;
   final HistoricalStockPurchaseService _historyService;
 
-  Future<void> _onStarted(TradingStockStarted event, Emitter<TradingStockState> emit) async {
+  Future<void> _onStarted(
+    TradingStockStarted event,
+    Emitter<TradingStockState> emit,
+  ) async {
     emit(state.copyWith(status: TradingStockStatus.loading));
     try {
       final years = await _tradingStockService.getAll();
       final history = await _historyService.getAll();
-      emit(state.copyWith(status: TradingStockStatus.loaded, years: years, historicalPurchases: history));
+      emit(
+        state.copyWith(
+          status: TradingStockStatus.loaded,
+          years: years,
+          historicalPurchases: history,
+        ),
+      );
     } catch (e) {
-      emit(state.copyWith(status: TradingStockStatus.error, errorMessage: e.toString()));
+      emit(
+        state.copyWith(
+          status: TradingStockStatus.error,
+          errorMessage: e.toString(),
+        ),
+      );
     }
   }
 
-  Future<void> _onYearAdded(TradingStockYearAdded event, Emitter<TradingStockState> emit) async {
+  Future<void> _onYearAdded(
+    TradingStockYearAdded event,
+    Emitter<TradingStockState> emit,
+  ) async {
     try {
       await _tradingStockService.create(
         taxYearStart: event.taxYearStart,
@@ -91,16 +108,29 @@ class TradingStockBloc extends Bloc<TradingStockEvent, TradingStockState> {
       );
       add(TradingStockStarted());
     } catch (e) {
-      emit(state.copyWith(status: TradingStockStatus.error, errorMessage: e.toString()));
+      emit(
+        state.copyWith(
+          status: TradingStockStatus.error,
+          errorMessage: e.toString(),
+        ),
+      );
     }
   }
 
-  Future<void> _onHistoricalAdded(HistoricalStockPurchaseAdded event, Emitter<TradingStockState> emit) async {
+  Future<void> _onHistoricalAdded(
+    HistoricalStockPurchaseAdded event,
+    Emitter<TradingStockState> emit,
+  ) async {
     try {
       await _historyService.create(event.purchase);
       add(TradingStockStarted());
     } catch (e) {
-      emit(state.copyWith(status: TradingStockStatus.error, errorMessage: e.toString()));
+      emit(
+        state.copyWith(
+          status: TradingStockStatus.error,
+          errorMessage: e.toString(),
+        ),
+      );
     }
   }
 }

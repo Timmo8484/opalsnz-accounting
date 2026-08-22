@@ -8,7 +8,9 @@ class TradingStockService {
 
   Future<List<TradingStockYear>> getAll() async {
     final json = await _client.get('/api/trading-stock-years') as List;
-    return json.map((e) => TradingStockYear.fromJson(e as Map<String, dynamic>)).toList();
+    return json
+        .map((e) => TradingStockYear.fromJson(e as Map<String, dynamic>))
+        .toList();
   }
 
   Future<TradingStockYear> create({
@@ -21,16 +23,19 @@ class TradingStockService {
     bool isFinalised = false,
     String? notes,
   }) async {
-    final json = await _client.post('/api/trading-stock-years', body: {
-      'taxYearStart': taxYearStart.toIso8601String().substring(0, 10),
-      'taxYearEnd': taxYearEnd.toIso8601String().substring(0, 10),
-      'openingValue': openingValue,
-      'openingValueMethod': openingValueMethod.wireValue,
-      'closingValue': closingValue,
-      'closingValueMethod': closingValueMethod?.wireValue,
-      'isFinalised': isFinalised,
-      'notes': notes,
-    });
+    final json = await _client.post(
+      '/api/trading-stock-years',
+      body: {
+        'taxYearStart': taxYearStart.toIso8601String().substring(0, 10),
+        'taxYearEnd': taxYearEnd.toIso8601String().substring(0, 10),
+        'openingValue': openingValue,
+        'openingValueMethod': openingValueMethod.wireValue,
+        'closingValue': closingValue,
+        'closingValueMethod': closingValueMethod?.wireValue,
+        'isFinalised': isFinalised,
+        'notes': notes,
+      },
+    );
     return TradingStockYear.fromJson(json as Map<String, dynamic>);
   }
 
@@ -44,13 +49,21 @@ class HistoricalStockPurchaseService {
 
   Future<List<HistoricalStockPurchase>> getAll() async {
     final json = await _client.get('/api/historical-stock-purchases') as List;
-    return json.map((e) => HistoricalStockPurchase.fromJson(e as Map<String, dynamic>)).toList();
+    return json
+        .map((e) => HistoricalStockPurchase.fromJson(e as Map<String, dynamic>))
+        .toList();
   }
 
-  Future<HistoricalStockPurchase> create(HistoricalStockPurchase purchase) async {
-    final json = await _client.post('/api/historical-stock-purchases', body: purchase.toRequestJson());
+  Future<HistoricalStockPurchase> create(
+    HistoricalStockPurchase purchase,
+  ) async {
+    final json = await _client.post(
+      '/api/historical-stock-purchases',
+      body: purchase.toRequestJson(),
+    );
     return HistoricalStockPurchase.fromJson(json as Map<String, dynamic>);
   }
 
-  Future<void> delete(int id) => _client.delete('/api/historical-stock-purchases/$id');
+  Future<void> delete(int id) =>
+      _client.delete('/api/historical-stock-purchases/$id');
 }

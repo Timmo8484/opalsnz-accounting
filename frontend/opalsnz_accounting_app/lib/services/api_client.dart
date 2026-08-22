@@ -33,17 +33,28 @@ class ApiClient {
       _baseUri.replace(path: path, queryParameters: query);
 
   Future<dynamic> get(String path, {Map<String, String>? query}) async {
-    final response = await http.get(_uri(path, query), headers: await _headers());
+    final response = await http.get(
+      _uri(path, query),
+      headers: await _headers(),
+    );
     return _handle(response);
   }
 
   Future<dynamic> post(String path, {Object? body}) async {
-    final response = await http.post(_uri(path), headers: await _headers(), body: jsonEncode(body));
+    final response = await http.post(
+      _uri(path),
+      headers: await _headers(),
+      body: jsonEncode(body),
+    );
     return _handle(response);
   }
 
   Future<dynamic> put(String path, {Object? body}) async {
-    final response = await http.put(_uri(path), headers: await _headers(), body: jsonEncode(body));
+    final response = await http.put(
+      _uri(path),
+      headers: await _headers(),
+      body: jsonEncode(body),
+    );
     return _handle(response);
   }
 
@@ -59,6 +70,11 @@ class ApiClient {
       }
       return jsonDecode(response.body);
     }
-    throw ApiException(response.statusCode, response.body.isEmpty ? response.reasonPhrase ?? 'Request failed' : response.body);
+    throw ApiException(
+      response.statusCode,
+      response.body.isEmpty
+          ? response.reasonPhrase ?? 'Request failed'
+          : response.body,
+    );
   }
 }

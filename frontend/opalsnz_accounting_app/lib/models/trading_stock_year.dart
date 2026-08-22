@@ -52,15 +52,19 @@ class TradingStockYear {
   final String? notes;
   final double? deductibleStockCost;
 
-  factory TradingStockYear.fromJson(Map<String, dynamic> json) => TradingStockYear(
+  factory TradingStockYear.fromJson(Map<String, dynamic> json) =>
+      TradingStockYear(
         id: json['id'] as int,
         taxYearStart: DateTime.parse(json['taxYearStart'] as String),
         taxYearEnd: DateTime.parse(json['taxYearEnd'] as String),
         openingValue: (json['openingValue'] as num).toDouble(),
-        openingValueMethod: OpeningValueMethod.fromWire(json['openingValueMethod'] as String),
+        openingValueMethod: OpeningValueMethod.fromWire(
+          json['openingValueMethod'] as String,
+        ),
         closingValue: (json['closingValue'] as num?)?.toDouble(),
-        closingValueMethod:
-            json['closingValueMethod'] == null ? null : ClosingValueMethod.fromWire(json['closingValueMethod'] as String),
+        closingValueMethod: json['closingValueMethod'] == null
+            ? null
+            : ClosingValueMethod.fromWire(json['closingValueMethod'] as String),
         isFinalised: json['isFinalised'] as bool,
         notes: json['notes'] as String?,
         deductibleStockCost: (json['deductibleStockCost'] as num?)?.toDouble(),
@@ -82,7 +86,8 @@ class HistoricalStockPurchase {
   final double amount;
   final String? notes;
 
-  factory HistoricalStockPurchase.fromJson(Map<String, dynamic> json) => HistoricalStockPurchase(
+  factory HistoricalStockPurchase.fromJson(Map<String, dynamic> json) =>
+      HistoricalStockPurchase(
         id: json['id'] as int,
         purchaseDate: DateTime.parse(json['purchaseDate'] as String),
         description: json['description'] as String,
@@ -91,9 +96,9 @@ class HistoricalStockPurchase {
       );
 
   Map<String, dynamic> toRequestJson() => {
-        'purchaseDate': purchaseDate.toIso8601String().substring(0, 10),
-        'description': description,
-        'amount': amount,
-        'notes': notes,
-      };
+    'purchaseDate': purchaseDate.toIso8601String().substring(0, 10),
+    'description': description,
+    'amount': amount,
+    'notes': notes,
+  };
 }

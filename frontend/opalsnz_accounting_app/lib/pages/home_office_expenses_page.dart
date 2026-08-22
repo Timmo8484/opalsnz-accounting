@@ -30,7 +30,10 @@ class _HomeOfficeExpensesPageState extends State<HomeOfficeExpensesPage> {
       appBar: AppBar(
         title: const Text('Home Office Expenses'),
         actions: [
-          IconButton(icon: const Icon(Icons.add), onPressed: () => _showAddDialog(context)),
+          IconButton(
+            icon: const Icon(Icons.add),
+            onPressed: () => _showAddDialog(context),
+          ),
         ],
       ),
       body: BlocBuilder<HomeOfficeExpenseBloc, HomeOfficeExpenseState>(
@@ -39,7 +42,9 @@ class _HomeOfficeExpensesPageState extends State<HomeOfficeExpensesPage> {
             return const Center(child: CircularProgressIndicator());
           }
           if (state.items.isEmpty) {
-            return const Center(child: Text('No entries yet. Tap + to add one.'));
+            return const Center(
+              child: Text('No entries yet. Tap + to add one.'),
+            );
           }
           return ListView.separated(
             itemCount: state.items.length,
@@ -47,7 +52,9 @@ class _HomeOfficeExpensesPageState extends State<HomeOfficeExpensesPage> {
             itemBuilder: (context, index) {
               final e = state.items[index];
               return ListTile(
-                title: Text('${e.expenseCategoryName} - ${_currency.format(e.grossAmount)}'),
+                title: Text(
+                  '${e.expenseCategoryName} - ${_currency.format(e.grossAmount)}',
+                ),
                 subtitle: Text(
                   '${_date.format(e.entryDate)} - ${e.claimPercent.toStringAsFixed(0)}% claim'
                   '${e.hasGst ? ' (incl. GST)' : ''}',
@@ -58,7 +65,9 @@ class _HomeOfficeExpensesPageState extends State<HomeOfficeExpensesPage> {
                     Text(_currency.format(e.claimableAmount)),
                     IconButton(
                       icon: const Icon(Icons.delete_outline),
-                      onPressed: () => context.read<HomeOfficeExpenseBloc>().add(HomeOfficeExpenseDeleted(e.id)),
+                      onPressed: () => context
+                          .read<HomeOfficeExpenseBloc>()
+                          .add(HomeOfficeExpenseDeleted(e.id)),
                     ),
                   ],
                 ),
@@ -75,7 +84,9 @@ class _HomeOfficeExpensesPageState extends State<HomeOfficeExpensesPage> {
     final categories = context.read<ExpenseCategoryBloc>().state.items;
     if (categories.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Add an expense category in Settings first.')),
+        const SnackBar(
+          content: Text('Add an expense category in Settings first.'),
+        ),
       );
       return;
     }
@@ -100,29 +111,47 @@ class _HomeOfficeExpensesPageState extends State<HomeOfficeExpensesPage> {
                   decoration: const InputDecoration(labelText: 'Category'),
                   items: [
                     for (final c in categories)
-                      DropdownMenuItem(value: c, child: Text('${c.name} (${c.defaultClaimPercent.toStringAsFixed(0)}%)')),
+                      DropdownMenuItem(
+                        value: c,
+                        child: Text(
+                          '${c.name} (${c.defaultClaimPercent.toStringAsFixed(0)}%)',
+                        ),
+                      ),
                   ],
                   onChanged: (v) => setState(() => category = v!),
                 ),
                 TextFormField(
                   controller: amountController,
-                  decoration: const InputDecoration(labelText: 'Gross amount (incl. GST if applicable)'),
-                  keyboardType: const TextInputType.numberWithOptions(decimal: true),
-                  validator: (v) => double.tryParse(v ?? '') == null ? 'Enter a number' : null,
+                  decoration: const InputDecoration(
+                    labelText: 'Gross amount (incl. GST if applicable)',
+                  ),
+                  keyboardType: const TextInputType.numberWithOptions(
+                    decimal: true,
+                  ),
+                  validator: (v) => double.tryParse(v ?? '') == null
+                      ? 'Enter a number'
+                      : null,
                 ),
               ],
             ),
           ),
           actions: [
-            TextButton(onPressed: () => Navigator.pop(dialogContext), child: const Text('Cancel')),
+            TextButton(
+              onPressed: () => Navigator.pop(dialogContext),
+              child: const Text('Cancel'),
+            ),
             FilledButton(
               onPressed: () {
                 if (!formKey.currentState!.validate()) return;
-                bloc.add(HomeOfficeExpenseAdded(HomeOfficeExpenseUpsertRequest(
-                  expenseCategoryId: category.id,
-                  entryDate: entryDate,
-                  grossAmount: double.parse(amountController.text),
-                )));
+                bloc.add(
+                  HomeOfficeExpenseAdded(
+                    HomeOfficeExpenseUpsertRequest(
+                      expenseCategoryId: category.id,
+                      entryDate: entryDate,
+                      grossAmount: double.parse(amountController.text),
+                    ),
+                  ),
+                );
                 Navigator.pop(dialogContext);
               },
               child: const Text('Add'),

@@ -109,6 +109,7 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
-app.MapHealthChecks("/health");
+// Health checks (container/orchestrator probes) must stay anonymous despite the fallback auth policy.
+app.MapHealthChecks("/health").AllowAnonymous();
 
 app.Run();

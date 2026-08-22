@@ -1,0 +1,26 @@
+services:
+  # Frontend (Flutter Web served by Nginx) - API_BASE_URL is baked in at image build time,
+  # so it must point at wherever the backend is reachable from users' browsers.
+  frontend:
+    container_name: opalsnz-accounting-frontend
+    image: opalsnz-accounting-frontend:latest
+    restart: unless-stopped
+
+    environment:
+      TZ: Pacific/Auckland
+
+    ports:
+      - "8080:80"
+
+    networks:
+      - opalsnz-accounting-network
+
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:80/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+networks:
+  opalsnz-accounting-network:
+    external: true

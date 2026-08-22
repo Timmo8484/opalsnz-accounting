@@ -6,13 +6,21 @@ class IncomeService {
 
   final ApiClient _client;
 
-  Future<List<IncomeEntry>> getAll({DateTime? fromDate, DateTime? toDate}) async {
+  Future<List<IncomeEntry>> getAll({
+    DateTime? fromDate,
+    DateTime? toDate,
+  }) async {
     final query = <String, String>{
-      if (fromDate != null) 'fromDate': fromDate.toIso8601String().substring(0, 10),
+      if (fromDate != null)
+        'fromDate': fromDate.toIso8601String().substring(0, 10),
       if (toDate != null) 'toDate': toDate.toIso8601String().substring(0, 10),
     };
-    final json = await _client.get('/api/income', query: query.isEmpty ? null : query) as List;
-    return json.map((e) => IncomeEntry.fromJson(e as Map<String, dynamic>)).toList();
+    final json =
+        await _client.get('/api/income', query: query.isEmpty ? null : query)
+            as List;
+    return json
+        .map((e) => IncomeEntry.fromJson(e as Map<String, dynamic>))
+        .toList();
   }
 
   Future<IncomeEntry> create(IncomeEntry entry) async {

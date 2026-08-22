@@ -23,7 +23,8 @@ class HomeOfficeExpenseEntry {
   final double claimableGst;
   final String? notes;
 
-  factory HomeOfficeExpenseEntry.fromJson(Map<String, dynamic> json) => HomeOfficeExpenseEntry(
+  factory HomeOfficeExpenseEntry.fromJson(Map<String, dynamic> json) =>
+      HomeOfficeExpenseEntry(
         id: json['id'] as int,
         expenseCategoryId: json['expenseCategoryId'] as int,
         expenseCategoryName: json['expenseCategoryName'] as String,
@@ -55,11 +56,11 @@ class HomeOfficeExpenseUpsertRequest {
   final String? notes;
 
   Map<String, dynamic> toJson() => {
-        'expenseCategoryId': expenseCategoryId,
-        'entryDate': entryDate.toIso8601String().substring(0, 10),
-        'grossAmount': grossAmount,
-        'claimPercent': claimPercent,
-        'hasGst': hasGst,
-        'notes': notes,
-      };
+    'expenseCategoryId': expenseCategoryId,
+    'entryDate': entryDate.toIso8601String().substring(0, 10),
+    'grossAmount': grossAmount,
+    'claimPercent': claimPercent,
+    'hasGst': hasGst,
+    'notes': notes,
+  };
 }

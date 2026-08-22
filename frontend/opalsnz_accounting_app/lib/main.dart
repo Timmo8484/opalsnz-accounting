@@ -38,21 +38,43 @@ class OpalsAccountingApp extends StatelessWidget {
         Provider<AuthService>.value(value: authService),
         Provider<ApiClient>.value(value: apiClient),
         Provider<IncomeService>(create: (_) => IncomeService(apiClient)),
-        Provider<ExpenseCategoryService>(create: (_) => ExpenseCategoryService(apiClient)),
-        Provider<HomeOfficeExpenseService>(create: (_) => HomeOfficeExpenseService(apiClient)),
-        Provider<BusinessPurchaseService>(create: (_) => BusinessPurchaseService(apiClient)),
+        Provider<ExpenseCategoryService>(
+          create: (_) => ExpenseCategoryService(apiClient),
+        ),
+        Provider<HomeOfficeExpenseService>(
+          create: (_) => HomeOfficeExpenseService(apiClient),
+        ),
+        Provider<BusinessPurchaseService>(
+          create: (_) => BusinessPurchaseService(apiClient),
+        ),
         Provider<AssetService>(create: (_) => AssetService(apiClient)),
-        Provider<TradingStockService>(create: (_) => TradingStockService(apiClient)),
-        Provider<HistoricalStockPurchaseService>(create: (_) => HistoricalStockPurchaseService(apiClient)),
+        Provider<TradingStockService>(
+          create: (_) => TradingStockService(apiClient),
+        ),
+        Provider<HistoricalStockPurchaseService>(
+          create: (_) => HistoricalStockPurchaseService(apiClient),
+        ),
         Provider<ReportService>(create: (_) => ReportService(apiClient)),
       ],
       child: MultiBlocProvider(
         providers: [
-          BlocProvider(create: (ctx) => AuthBloc(ctx.read<AuthService>())..add(AuthStarted())),
+          BlocProvider(
+            create: (ctx) =>
+                AuthBloc(ctx.read<AuthService>())..add(AuthStarted()),
+          ),
           BlocProvider(create: (ctx) => IncomeBloc(ctx.read<IncomeService>())),
-          BlocProvider(create: (ctx) => ExpenseCategoryBloc(ctx.read<ExpenseCategoryService>())),
-          BlocProvider(create: (ctx) => HomeOfficeExpenseBloc(ctx.read<HomeOfficeExpenseService>())),
-          BlocProvider(create: (ctx) => BusinessPurchaseBloc(ctx.read<BusinessPurchaseService>())),
+          BlocProvider(
+            create: (ctx) =>
+                ExpenseCategoryBloc(ctx.read<ExpenseCategoryService>()),
+          ),
+          BlocProvider(
+            create: (ctx) =>
+                HomeOfficeExpenseBloc(ctx.read<HomeOfficeExpenseService>()),
+          ),
+          BlocProvider(
+            create: (ctx) =>
+                BusinessPurchaseBloc(ctx.read<BusinessPurchaseService>()),
+          ),
           BlocProvider(create: (ctx) => AssetBloc(ctx.read<AssetService>())),
           BlocProvider(
             create: (ctx) => TradingStockBloc(
@@ -87,7 +109,9 @@ class _RootPage extends StatelessWidget {
           case AuthStatus.unauthenticated:
             return const LoginPage();
           case AuthStatus.unknown:
-            return const Scaffold(body: Center(child: CircularProgressIndicator()));
+            return const Scaffold(
+              body: Center(child: CircularProgressIndicator()),
+            );
         }
       },
     );

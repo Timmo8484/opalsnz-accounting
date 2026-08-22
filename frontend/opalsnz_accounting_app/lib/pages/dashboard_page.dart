@@ -47,17 +47,23 @@ class _DashboardPageState extends State<DashboardPage> {
                 _SummaryCard(
                   title: 'Income (year to date)',
                   value: _currency.format(income?.grandTotal ?? 0),
-                  subtitle: 'incl. ${_currency.format(income?.totalGst ?? 0)} GST',
+                  subtitle:
+                      'incl. ${_currency.format(income?.totalGst ?? 0)} GST',
                 ),
                 _SummaryCard(
                   title: 'Home office claimable',
-                  value: _currency.format(homeOffice?.totalClaimableAmount ?? 0),
-                  subtitle: 'incl. ${_currency.format(homeOffice?.totalClaimableGst ?? 0)} GST',
+                  value: _currency.format(
+                    homeOffice?.totalClaimableAmount ?? 0,
+                  ),
+                  subtitle:
+                      'incl. ${_currency.format(homeOffice?.totalClaimableGst ?? 0)} GST',
                 ),
                 _SummaryCard(
                   title: 'Net GST (year to date)',
                   value: _currency.format(gst?.netGst ?? 0),
-                  subtitle: (gst?.netGst ?? 0) >= 0 ? 'Payable to IRD' : 'Refund due',
+                  subtitle: (gst?.netGst ?? 0) >= 0
+                      ? 'Payable to IRD'
+                      : 'Refund due',
                 ),
               ],
             ),
@@ -69,7 +75,11 @@ class _DashboardPageState extends State<DashboardPage> {
 }
 
 class _SummaryCard extends StatelessWidget {
-  const _SummaryCard({required this.title, required this.value, required this.subtitle});
+  const _SummaryCard({
+    required this.title,
+    required this.value,
+    required this.subtitle,
+  });
 
   final String title;
   final String value;

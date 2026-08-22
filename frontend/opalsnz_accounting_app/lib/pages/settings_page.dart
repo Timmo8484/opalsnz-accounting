@@ -23,7 +23,10 @@ class _SettingsPageState extends State<SettingsPage> {
       appBar: AppBar(
         title: const Text('Settings - Home Office Expense Categories'),
         actions: [
-          IconButton(icon: const Icon(Icons.add), onPressed: () => _showAddDialog(context)),
+          IconButton(
+            icon: const Icon(Icons.add),
+            onPressed: () => _showAddDialog(context),
+          ),
         ],
       ),
       body: BlocBuilder<ExpenseCategoryBloc, ExpenseCategoryState>(
@@ -38,19 +41,23 @@ class _SettingsPageState extends State<SettingsPage> {
               final c = state.items[index];
               return ListTile(
                 title: Text(c.name),
-                subtitle: Text('${c.defaultClaimPercent.toStringAsFixed(0)}% claim${c.hasGst ? ' - has GST' : ' - no GST'}'),
+                subtitle: Text(
+                  '${c.defaultClaimPercent.toStringAsFixed(0)}% claim${c.hasGst ? ' - has GST' : ' - no GST'}',
+                ),
                 trailing: Switch(
                   value: c.isActive,
-                  onChanged: (v) => context.read<ExpenseCategoryBloc>().add(ExpenseCategoryUpdated(
-                        c.id,
-                        ExpenseCategory(
-                          id: c.id,
-                          name: c.name,
-                          defaultClaimPercent: c.defaultClaimPercent,
-                          hasGst: c.hasGst,
-                          isActive: v,
-                        ),
-                      )),
+                  onChanged: (v) => context.read<ExpenseCategoryBloc>().add(
+                    ExpenseCategoryUpdated(
+                      c.id,
+                      ExpenseCategory(
+                        id: c.id,
+                        name: c.name,
+                        defaultClaimPercent: c.defaultClaimPercent,
+                        hasGst: c.hasGst,
+                        isActive: v,
+                      ),
+                    ),
+                  ),
                 ),
                 onTap: () => _showEditDialog(context, c),
               );
@@ -61,15 +68,22 @@ class _SettingsPageState extends State<SettingsPage> {
     );
   }
 
-  void _showAddDialog(BuildContext context) => _showUpsertDialog(context, title: 'Add category');
+  void _showAddDialog(BuildContext context) =>
+      _showUpsertDialog(context, title: 'Add category');
 
   void _showEditDialog(BuildContext context, ExpenseCategory category) =>
       _showUpsertDialog(context, title: 'Edit category', existing: category);
 
-  void _showUpsertDialog(BuildContext context, {required String title, ExpenseCategory? existing}) {
+  void _showUpsertDialog(
+    BuildContext context, {
+    required String title,
+    ExpenseCategory? existing,
+  }) {
     final bloc = context.read<ExpenseCategoryBloc>();
     final nameController = TextEditingController(text: existing?.name);
-    final percentController = TextEditingController(text: existing?.defaultClaimPercent.toString() ?? '0');
+    final percentController = TextEditingController(
+      text: existing?.defaultClaimPercent.toString() ?? '0',
+    );
     var hasGst = existing?.hasGst ?? true;
     final formKey = GlobalKey<FormState>();
 
@@ -86,13 +100,20 @@ class _SettingsPageState extends State<SettingsPage> {
                 TextFormField(
                   controller: nameController,
                   decoration: const InputDecoration(labelText: 'Name'),
-                  validator: (v) => (v == null || v.isEmpty) ? 'Required' : null,
+                  validator: (v) =>
+                      (v == null || v.isEmpty) ? 'Required' : null,
                 ),
                 TextFormField(
                   controller: percentController,
-                  decoration: const InputDecoration(labelText: 'Default claim %'),
-                  keyboardType: const TextInputType.numberWithOptions(decimal: true),
-                  validator: (v) => double.tryParse(v ?? '') == null ? 'Enter a number' : null,
+                  decoration: const InputDecoration(
+                    labelText: 'Default claim %',
+                  ),
+                  keyboardType: const TextInputType.numberWithOptions(
+                    decimal: true,
+                  ),
+                  validator: (v) => double.tryParse(v ?? '') == null
+                      ? 'Enter a number'
+                      : null,
                 ),
                 CheckboxListTile(
                   title: const Text('Category has GST'),
@@ -103,7 +124,10 @@ class _SettingsPageState extends State<SettingsPage> {
             ),
           ),
           actions: [
-            TextButton(onPressed: () => Navigator.pop(dialogContext), child: const Text('Cancel')),
+            TextButton(
+              onPressed: () => Navigator.pop(dialogContext),
+              child: const Text('Cancel'),
+            ),
             FilledButton(
               onPressed: () {
                 if (!formKey.currentState!.validate()) return;

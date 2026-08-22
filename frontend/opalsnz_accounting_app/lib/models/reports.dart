@@ -13,7 +13,8 @@ class IncomeStreamTotal {
   final double gstAmount;
   final double total;
 
-  factory IncomeStreamTotal.fromJson(Map<String, dynamic> json) => IncomeStreamTotal(
+  factory IncomeStreamTotal.fromJson(Map<String, dynamic> json) =>
+      IncomeStreamTotal(
         incomeStream: IncomeStream.fromWire(json['incomeStream'] as String),
         amountExclGst: (json['amountExclGst'] as num).toDouble(),
         gstAmount: (json['gstAmount'] as num).toDouble(),
@@ -39,15 +40,15 @@ class IncomeSummary {
   final double grandTotal;
 
   factory IncomeSummary.fromJson(Map<String, dynamic> json) => IncomeSummary(
-        fromDate: DateTime.parse(json['fromDate'] as String),
-        toDate: DateTime.parse(json['toDate'] as String),
-        streamTotals: (json['streamTotals'] as List)
-            .map((e) => IncomeStreamTotal.fromJson(e as Map<String, dynamic>))
-            .toList(),
-        totalAmountExclGst: (json['totalAmountExclGst'] as num).toDouble(),
-        totalGst: (json['totalGst'] as num).toDouble(),
-        grandTotal: (json['grandTotal'] as num).toDouble(),
-      );
+    fromDate: DateTime.parse(json['fromDate'] as String),
+    toDate: DateTime.parse(json['toDate'] as String),
+    streamTotals: (json['streamTotals'] as List)
+        .map((e) => IncomeStreamTotal.fromJson(e as Map<String, dynamic>))
+        .toList(),
+    totalAmountExclGst: (json['totalAmountExclGst'] as num).toDouble(),
+    totalGst: (json['totalGst'] as num).toDouble(),
+    grandTotal: (json['grandTotal'] as num).toDouble(),
+  );
 }
 
 class HomeOfficeCategoryTotal {
@@ -65,7 +66,8 @@ class HomeOfficeCategoryTotal {
   final double claimableAmount;
   final double claimableGst;
 
-  factory HomeOfficeCategoryTotal.fromJson(Map<String, dynamic> json) => HomeOfficeCategoryTotal(
+  factory HomeOfficeCategoryTotal.fromJson(Map<String, dynamic> json) =>
+      HomeOfficeCategoryTotal(
         expenseCategoryId: json['expenseCategoryId'] as int,
         expenseCategoryName: json['expenseCategoryName'] as String,
         grossAmount: (json['grossAmount'] as num).toDouble(),
@@ -91,11 +93,15 @@ class HomeOfficeSummary {
   final double totalClaimableAmount;
   final double totalClaimableGst;
 
-  factory HomeOfficeSummary.fromJson(Map<String, dynamic> json) => HomeOfficeSummary(
+  factory HomeOfficeSummary.fromJson(Map<String, dynamic> json) =>
+      HomeOfficeSummary(
         fromDate: DateTime.parse(json['fromDate'] as String),
         toDate: DateTime.parse(json['toDate'] as String),
         categoryTotals: (json['categoryTotals'] as List)
-            .map((e) => HomeOfficeCategoryTotal.fromJson(e as Map<String, dynamic>))
+            .map(
+              (e) =>
+                  HomeOfficeCategoryTotal.fromJson(e as Map<String, dynamic>),
+            )
             .toList(),
         totalGrossAmount: (json['totalGrossAmount'] as num).toDouble(),
         totalClaimableAmount: (json['totalClaimableAmount'] as num).toDouble(),
@@ -118,7 +124,8 @@ class GstPeriodSummary {
   final double inputGst;
   final double netGst;
 
-  factory GstPeriodSummary.fromJson(Map<String, dynamic> json) => GstPeriodSummary(
+  factory GstPeriodSummary.fromJson(Map<String, dynamic> json) =>
+      GstPeriodSummary(
         periodStart: DateTime.parse(json['periodStart'] as String),
         periodEnd: DateTime.parse(json['periodEnd'] as String),
         outputGst: (json['outputGst'] as num).toDouble(),
@@ -142,7 +149,8 @@ class DepreciationScheduleLine {
   final double depreciationAmount;
   final double closingValue;
 
-  factory DepreciationScheduleLine.fromJson(Map<String, dynamic> json) => DepreciationScheduleLine(
+  factory DepreciationScheduleLine.fromJson(Map<String, dynamic> json) =>
+      DepreciationScheduleLine(
         assetId: json['assetId'] as int,
         assetDescription: json['assetDescription'] as String,
         openingValue: (json['openingValue'] as num).toDouble(),
@@ -164,10 +172,16 @@ class DepreciationSchedule {
   final List<DepreciationScheduleLine> lines;
   final double totalDepreciation;
 
-  factory DepreciationSchedule.fromJson(Map<String, dynamic> json) => DepreciationSchedule(
+  factory DepreciationSchedule.fromJson(Map<String, dynamic> json) =>
+      DepreciationSchedule(
         taxYearStart: DateTime.parse(json['taxYearStart'] as String),
         taxYearEnd: DateTime.parse(json['taxYearEnd'] as String),
-        lines: (json['lines'] as List).map((e) => DepreciationScheduleLine.fromJson(e as Map<String, dynamic>)).toList(),
+        lines: (json['lines'] as List)
+            .map(
+              (e) =>
+                  DepreciationScheduleLine.fromJson(e as Map<String, dynamic>),
+            )
+            .toList(),
         totalDepreciation: (json['totalDepreciation'] as num).toDouble(),
       );
 }

@@ -29,7 +29,10 @@ class _AssetsPageState extends State<AssetsPage> {
       appBar: AppBar(
         title: const Text('Assets & Depreciation'),
         actions: [
-          IconButton(icon: const Icon(Icons.add), onPressed: () => _showAddDialog(context)),
+          IconButton(
+            icon: const Icon(Icons.add),
+            onPressed: () => _showAddDialog(context),
+          ),
         ],
       ),
       body: BlocBuilder<AssetBloc, AssetState>(
@@ -38,7 +41,9 @@ class _AssetsPageState extends State<AssetsPage> {
             return const Center(child: CircularProgressIndicator());
           }
           if (state.items.isEmpty) {
-            return const Center(child: Text('No assets yet. Tap + to add one.'));
+            return const Center(
+              child: Text('No assets yet. Tap + to add one.'),
+            );
           }
           return ListView.separated(
             itemCount: state.items.length,
@@ -61,7 +66,8 @@ class _AssetsPageState extends State<AssetsPage> {
                       ),
                     IconButton(
                       icon: const Icon(Icons.delete_outline),
-                      onPressed: () => context.read<AssetBloc>().add(AssetDeleted(a.id)),
+                      onPressed: () =>
+                          context.read<AssetBloc>().add(AssetDeleted(a.id)),
                     ),
                   ],
                 ),
@@ -95,45 +101,68 @@ class _AssetsPageState extends State<AssetsPage> {
                 TextFormField(
                   controller: descriptionController,
                   decoration: const InputDecoration(labelText: 'Description'),
-                  validator: (v) => (v == null || v.isEmpty) ? 'Required' : null,
+                  validator: (v) =>
+                      (v == null || v.isEmpty) ? 'Required' : null,
                 ),
                 TextFormField(
                   controller: costController,
-                  decoration: const InputDecoration(labelText: 'Cost (excl. GST)'),
-                  keyboardType: const TextInputType.numberWithOptions(decimal: true),
-                  validator: (v) => double.tryParse(v ?? '') == null ? 'Enter a number' : null,
+                  decoration: const InputDecoration(
+                    labelText: 'Cost (excl. GST)',
+                  ),
+                  keyboardType: const TextInputType.numberWithOptions(
+                    decimal: true,
+                  ),
+                  validator: (v) => double.tryParse(v ?? '') == null
+                      ? 'Enter a number'
+                      : null,
                 ),
                 DropdownButtonFormField<DepreciationMethod>(
                   value: method,
-                  decoration: const InputDecoration(labelText: 'Depreciation method'),
+                  decoration: const InputDecoration(
+                    labelText: 'Depreciation method',
+                  ),
                   items: [
-                    for (final m in DepreciationMethod.values) DropdownMenuItem(value: m, child: Text(m.label)),
+                    for (final m in DepreciationMethod.values)
+                      DropdownMenuItem(value: m, child: Text(m.label)),
                   ],
                   onChanged: (v) => setState(() => method = v!),
                 ),
                 TextFormField(
                   controller: rateController,
-                  decoration: const InputDecoration(labelText: 'Depreciation rate % (per IR265)'),
-                  keyboardType: const TextInputType.numberWithOptions(decimal: true),
-                  validator: (v) => double.tryParse(v ?? '') == null ? 'Enter a number' : null,
+                  decoration: const InputDecoration(
+                    labelText: 'Depreciation rate % (per IR265)',
+                  ),
+                  keyboardType: const TextInputType.numberWithOptions(
+                    decimal: true,
+                  ),
+                  validator: (v) => double.tryParse(v ?? '') == null
+                      ? 'Enter a number'
+                      : null,
                 ),
               ],
             ),
           ),
           actions: [
-            TextButton(onPressed: () => Navigator.pop(dialogContext), child: const Text('Cancel')),
+            TextButton(
+              onPressed: () => Navigator.pop(dialogContext),
+              child: const Text('Cancel'),
+            ),
             FilledButton(
               onPressed: () {
                 if (!formKey.currentState!.validate()) return;
-                bloc.add(AssetAdded(Asset(
-                  id: 0,
-                  description: descriptionController.text,
-                  purchaseDate: purchaseDate,
-                  costExclGst: double.parse(costController.text),
-                  depreciationMethod: method,
-                  depreciationRate: double.parse(rateController.text),
-                  isLowValueWriteoff: false,
-                )));
+                bloc.add(
+                  AssetAdded(
+                    Asset(
+                      id: 0,
+                      description: descriptionController.text,
+                      purchaseDate: purchaseDate,
+                      costExclGst: double.parse(costController.text),
+                      depreciationMethod: method,
+                      depreciationRate: double.parse(rateController.text),
+                      isLowValueWriteoff: false,
+                    ),
+                  ),
+                );
                 Navigator.pop(dialogContext);
               },
               child: const Text('Add'),
@@ -156,17 +185,23 @@ class _AssetsPageState extends State<AssetsPage> {
             future: assetService.getDepreciationYears(asset.id),
             builder: (context, snapshot) {
               if (!snapshot.hasData) {
-                return const SizedBox(height: 100, child: Center(child: CircularProgressIndicator()));
+                return const SizedBox(
+                  height: 100,
+                  child: Center(child: CircularProgressIndicator()),
+                );
               }
               final years = snapshot.data!;
               return Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  if (years.isEmpty) const Text('No depreciation years recorded yet.'),
+                  if (years.isEmpty)
+                    const Text('No depreciation years recorded yet.'),
                   for (final y in years)
                     ListTile(
                       dense: true,
-                      title: Text('${_date.format(y.taxYearStart)} - ${_date.format(y.taxYearEnd)}'),
+                      title: Text(
+                        '${_date.format(y.taxYearStart)} - ${_date.format(y.taxYearEnd)}',
+                      ),
                       subtitle: Text(
                         'Opening ${_currency.format(y.openingValue)} - Depreciation ${_currency.format(y.depreciationAmount)} - Closing ${_currency.format(y.closingValue)}',
                       ),
@@ -190,7 +225,10 @@ class _AssetsPageState extends State<AssetsPage> {
           ),
         ),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(dialogContext), child: const Text('Close')),
+          TextButton(
+            onPressed: () => Navigator.pop(dialogContext),
+            child: const Text('Close'),
+          ),
         ],
       ),
     );

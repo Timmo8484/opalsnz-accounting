@@ -29,26 +29,43 @@ class _LoginPageState extends State<LoginPage> {
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      const Icon(Icons.account_balance_wallet_outlined, size: 48),
+                      const Icon(
+                        Icons.account_balance_wallet_outlined,
+                        size: 48,
+                      ),
                       const SizedBox(height: 8),
-                      Text('OpalsNZ Accounting', style: Theme.of(context).textTheme.headlineSmall),
+                      Text(
+                        'OpalsNZ Accounting',
+                        style: Theme.of(context).textTheme.headlineSmall,
+                      ),
                       const SizedBox(height: 24),
                       TextFormField(
                         controller: _usernameController,
-                        decoration: const InputDecoration(labelText: 'Username'),
-                        validator: (v) => (v == null || v.isEmpty) ? 'Required' : null,
+                        decoration: const InputDecoration(
+                          labelText: 'Username',
+                        ),
+                        validator: (v) =>
+                            (v == null || v.isEmpty) ? 'Required' : null,
                       ),
                       const SizedBox(height: 12),
                       TextFormField(
                         controller: _passwordController,
-                        decoration: const InputDecoration(labelText: 'Password'),
+                        decoration: const InputDecoration(
+                          labelText: 'Password',
+                        ),
                         obscureText: true,
-                        validator: (v) => (v == null || v.isEmpty) ? 'Required' : null,
+                        validator: (v) =>
+                            (v == null || v.isEmpty) ? 'Required' : null,
                         onFieldSubmitted: (_) => _submit(context),
                       ),
                       if (state.errorMessage != null) ...[
                         const SizedBox(height: 12),
-                        Text(state.errorMessage!, style: TextStyle(color: Theme.of(context).colorScheme.error)),
+                        Text(
+                          state.errorMessage!,
+                          style: TextStyle(
+                            color: Theme.of(context).colorScheme.error,
+                          ),
+                        ),
                       ],
                       const SizedBox(height: 24),
                       SizedBox(
@@ -71,7 +88,9 @@ class _LoginPageState extends State<LoginPage> {
 
   void _submit(BuildContext context) {
     if (_formKey.currentState!.validate()) {
-      context.read<AuthBloc>().add(AuthLoginRequested(_usernameController.text, _passwordController.text));
+      context.read<AuthBloc>().add(
+        AuthLoginRequested(_usernameController.text, _passwordController.text),
+      );
     }
   }
 }

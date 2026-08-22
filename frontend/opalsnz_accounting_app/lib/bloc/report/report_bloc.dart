@@ -28,15 +28,14 @@ class ReportState {
     GstPeriodSummary? gstPeriodSummary,
     DepreciationSchedule? depreciationSchedule,
     String? errorMessage,
-  }) =>
-      ReportState(
-        status: status ?? this.status,
-        incomeSummary: incomeSummary ?? this.incomeSummary,
-        homeOfficeSummary: homeOfficeSummary ?? this.homeOfficeSummary,
-        gstPeriodSummary: gstPeriodSummary ?? this.gstPeriodSummary,
-        depreciationSchedule: depreciationSchedule ?? this.depreciationSchedule,
-        errorMessage: errorMessage,
-      );
+  }) => ReportState(
+    status: status ?? this.status,
+    incomeSummary: incomeSummary ?? this.incomeSummary,
+    homeOfficeSummary: homeOfficeSummary ?? this.homeOfficeSummary,
+    gstPeriodSummary: gstPeriodSummary ?? this.gstPeriodSummary,
+    depreciationSchedule: depreciationSchedule ?? this.depreciationSchedule,
+    errorMessage: errorMessage,
+  );
 }
 
 abstract class ReportEvent {}
@@ -56,22 +55,41 @@ class ReportBloc extends Bloc<ReportEvent, ReportState> {
 
   final ReportService _service;
 
-  Future<void> _onRequested(ReportRequested event, Emitter<ReportState> emit) async {
+  Future<void> _onRequested(
+    ReportRequested event,
+    Emitter<ReportState> emit,
+  ) async {
     emit(state.copyWith(status: ReportStatus.loading));
     try {
-      final income = await _service.getIncomeSummary(event.fromDate, event.toDate);
-      final homeOffice = await _service.getHomeOfficeSummary(event.fromDate, event.toDate);
-      final gst = await _service.getGstPeriodSummary(event.fromDate, event.toDate);
-      final depreciation = await _service.getDepreciationSchedule(event.fromDate, event.toDate);
-      emit(state.copyWith(
-        status: ReportStatus.loaded,
-        incomeSummary: income,
-        homeOfficeSummary: homeOffice,
-        gstPeriodSummary: gst,
-        depreciationSchedule: depreciation,
-      ));
+      final income = await _service.getIncomeSummary(
+        event.fromDate,
+        event.toDate,
+      );
+      final homeOffice = await _service.getHomeOfficeSummary(
+        event.fromDate,
+        event.toDate,
+      );
+      final gst = await _service.getGstPeriodSummary(
+        event.fromDate,
+        event.toDate,
+      );
+      final depreciation = await _service.getDepreciationSchedule(
+        event.fromDate,
+        event.toDate,
+      );
+      emit(
+        state.copyWith(
+          status: ReportStatus.loaded,
+          incomeSummary: income,
+          homeOfficeSummary: homeOffice,
+          gstPeriodSummary: gst,
+          depreciationSchedule: depreciation,
+        ),
+      );
     } catch (e) {
-      emit(state.copyWith(status: ReportStatus.error, errorMessage: e.toString()));
+      emit(
+        state.copyWith(status: ReportStatus.error, errorMessage: e.toString()),
+      );
     }
   }
 }

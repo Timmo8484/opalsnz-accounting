@@ -5,7 +5,11 @@ import '../../services/expense_category_service.dart';
 enum ExpenseCategoryStatus { initial, loading, loaded, error }
 
 class ExpenseCategoryState {
-  const ExpenseCategoryState({this.status = ExpenseCategoryStatus.initial, this.items = const [], this.errorMessage});
+  const ExpenseCategoryState({
+    this.status = ExpenseCategoryStatus.initial,
+    this.items = const [],
+    this.errorMessage,
+  });
 
   final ExpenseCategoryStatus status;
   final List<ExpenseCategory> items;
@@ -15,12 +19,11 @@ class ExpenseCategoryState {
     ExpenseCategoryStatus? status,
     List<ExpenseCategory>? items,
     String? errorMessage,
-  }) =>
-      ExpenseCategoryState(
-        status: status ?? this.status,
-        items: items ?? this.items,
-        errorMessage: errorMessage,
-      );
+  }) => ExpenseCategoryState(
+    status: status ?? this.status,
+    items: items ?? this.items,
+    errorMessage: errorMessage,
+  );
 }
 
 abstract class ExpenseCategoryEvent {}
@@ -38,7 +41,8 @@ class ExpenseCategoryUpdated extends ExpenseCategoryEvent {
   final ExpenseCategory category;
 }
 
-class ExpenseCategoryBloc extends Bloc<ExpenseCategoryEvent, ExpenseCategoryState> {
+class ExpenseCategoryBloc
+    extends Bloc<ExpenseCategoryEvent, ExpenseCategoryState> {
   ExpenseCategoryBloc(this._service) : super(const ExpenseCategoryState()) {
     on<ExpenseCategoryStarted>(_onStarted);
     on<ExpenseCategoryAdded>(_onAdded);
@@ -47,31 +51,55 @@ class ExpenseCategoryBloc extends Bloc<ExpenseCategoryEvent, ExpenseCategoryStat
 
   final ExpenseCategoryService _service;
 
-  Future<void> _onStarted(ExpenseCategoryStarted event, Emitter<ExpenseCategoryState> emit) async {
+  Future<void> _onStarted(
+    ExpenseCategoryStarted event,
+    Emitter<ExpenseCategoryState> emit,
+  ) async {
     emit(state.copyWith(status: ExpenseCategoryStatus.loading));
     try {
       final items = await _service.getAll(includeInactive: true);
       emit(state.copyWith(status: ExpenseCategoryStatus.loaded, items: items));
     } catch (e) {
-      emit(state.copyWith(status: ExpenseCategoryStatus.error, errorMessage: e.toString()));
+      emit(
+        state.copyWith(
+          status: ExpenseCategoryStatus.error,
+          errorMessage: e.toString(),
+        ),
+      );
     }
   }
 
-  Future<void> _onAdded(ExpenseCategoryAdded event, Emitter<ExpenseCategoryState> emit) async {
+  Future<void> _onAdded(
+    ExpenseCategoryAdded event,
+    Emitter<ExpenseCategoryState> emit,
+  ) async {
     try {
       await _service.create(event.category);
       add(ExpenseCategoryStarted());
     } catch (e) {
-      emit(state.copyWith(status: ExpenseCategoryStatus.error, errorMessage: e.toString()));
+      emit(
+        state.copyWith(
+          status: ExpenseCategoryStatus.error,
+          errorMessage: e.toString(),
+        ),
+      );
     }
   }
 
-  Future<void> _onUpdated(ExpenseCategoryUpdated event, Emitter<ExpenseCategoryState> emit) async {
+  Future<void> _onUpdated(
+    ExpenseCategoryUpdated event,
+    Emitter<ExpenseCategoryState> emit,
+  ) async {
     try {
       await _service.update(event.id, event.category);
       add(ExpenseCategoryStarted());
     } catch (e) {
-      emit(state.copyWith(status: ExpenseCategoryStatus.error, errorMessage: e.toString()));
+      emit(
+        state.copyWith(
+          status: ExpenseCategoryStatus.error,
+          errorMessage: e.toString(),
+        ),
+      );
     }
   }
 }

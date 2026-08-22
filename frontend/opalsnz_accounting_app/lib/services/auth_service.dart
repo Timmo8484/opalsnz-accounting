@@ -6,7 +6,8 @@ import '../config/app_config.dart';
 // Handles login + token storage. Kept separate from ApiClient to avoid a circular
 // dependency (ApiClient needs the stored token; login itself is unauthenticated).
 class AuthService {
-  AuthService({FlutterSecureStorage? storage}) : _storage = storage ?? const FlutterSecureStorage();
+  AuthService({FlutterSecureStorage? storage})
+    : _storage = storage ?? const FlutterSecureStorage();
 
   final FlutterSecureStorage _storage;
   static const _tokenKey = 'auth_token';

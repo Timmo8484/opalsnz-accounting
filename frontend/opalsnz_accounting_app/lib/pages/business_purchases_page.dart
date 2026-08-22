@@ -27,7 +27,10 @@ class _BusinessPurchasesPageState extends State<BusinessPurchasesPage> {
       appBar: AppBar(
         title: const Text('Business Purchases'),
         actions: [
-          IconButton(icon: const Icon(Icons.add), onPressed: () => _showAddDialog(context)),
+          IconButton(
+            icon: const Icon(Icons.add),
+            onPressed: () => _showAddDialog(context),
+          ),
         ],
       ),
       body: BlocBuilder<BusinessPurchaseBloc, BusinessPurchaseState>(
@@ -36,7 +39,9 @@ class _BusinessPurchasesPageState extends State<BusinessPurchasesPage> {
             return const Center(child: CircularProgressIndicator());
           }
           if (state.items.isEmpty) {
-            return const Center(child: Text('No purchases yet. Tap + to add one.'));
+            return const Center(
+              child: Text('No purchases yet. Tap + to add one.'),
+            );
           }
           return ListView.separated(
             itemCount: state.items.length,
@@ -56,7 +61,9 @@ class _BusinessPurchasesPageState extends State<BusinessPurchasesPage> {
                     Text(_currency.format(p.amountExclGst + p.gstAmount)),
                     IconButton(
                       icon: const Icon(Icons.delete_outline),
-                      onPressed: () => context.read<BusinessPurchaseBloc>().add(BusinessPurchaseDeleted(p.id)),
+                      onPressed: () => context.read<BusinessPurchaseBloc>().add(
+                        BusinessPurchaseDeleted(p.id),
+                      ),
                     ),
                   ],
                 ),
@@ -95,65 +102,91 @@ class _BusinessPurchasesPageState extends State<BusinessPurchasesPage> {
                     value: purchaseType,
                     decoration: const InputDecoration(labelText: 'Type'),
                     items: [
-                      for (final t in PurchaseType.values) DropdownMenuItem(value: t, child: Text(t.label)),
+                      for (final t in PurchaseType.values)
+                        DropdownMenuItem(value: t, child: Text(t.label)),
                     ],
                     onChanged: (v) => setState(() {
                       purchaseType = v!;
-                      isTradingStockPurchase = purchaseType == PurchaseType.opalRoughStock;
+                      isTradingStockPurchase =
+                          purchaseType == PurchaseType.opalRoughStock;
                       isCapitalAsset = purchaseType == PurchaseType.tool;
                     }),
                   ),
                   TextFormField(
                     controller: descriptionController,
                     decoration: const InputDecoration(labelText: 'Description'),
-                    validator: (v) => (v == null || v.isEmpty) ? 'Required' : null,
+                    validator: (v) =>
+                        (v == null || v.isEmpty) ? 'Required' : null,
                   ),
                   TextFormField(
                     controller: supplierController,
-                    decoration: const InputDecoration(labelText: 'Supplier (optional)'),
+                    decoration: const InputDecoration(
+                      labelText: 'Supplier (optional)',
+                    ),
                   ),
                   TextFormField(
                     controller: amountController,
-                    decoration: const InputDecoration(labelText: 'Amount (excl. GST)'),
-                    keyboardType: const TextInputType.numberWithOptions(decimal: true),
-                    validator: (v) => double.tryParse(v ?? '') == null ? 'Enter a number' : null,
+                    decoration: const InputDecoration(
+                      labelText: 'Amount (excl. GST)',
+                    ),
+                    keyboardType: const TextInputType.numberWithOptions(
+                      decimal: true,
+                    ),
+                    validator: (v) => double.tryParse(v ?? '') == null
+                        ? 'Enter a number'
+                        : null,
                   ),
                   TextFormField(
                     controller: gstController,
                     decoration: const InputDecoration(labelText: 'GST amount'),
-                    keyboardType: const TextInputType.numberWithOptions(decimal: true),
-                    validator: (v) => double.tryParse(v ?? '') == null ? 'Enter a number' : null,
+                    keyboardType: const TextInputType.numberWithOptions(
+                      decimal: true,
+                    ),
+                    validator: (v) => double.tryParse(v ?? '') == null
+                        ? 'Enter a number'
+                        : null,
                   ),
                   CheckboxListTile(
                     title: const Text('Capital asset (needs depreciating)'),
                     value: isCapitalAsset,
-                    onChanged: (v) => setState(() => isCapitalAsset = v ?? false),
+                    onChanged: (v) =>
+                        setState(() => isCapitalAsset = v ?? false),
                   ),
                   CheckboxListTile(
                     title: const Text('Trading stock purchase'),
                     value: isTradingStockPurchase,
-                    onChanged: (v) => setState(() => isTradingStockPurchase = v ?? false),
+                    onChanged: (v) =>
+                        setState(() => isTradingStockPurchase = v ?? false),
                   ),
                 ],
               ),
             ),
           ),
           actions: [
-            TextButton(onPressed: () => Navigator.pop(dialogContext), child: const Text('Cancel')),
+            TextButton(
+              onPressed: () => Navigator.pop(dialogContext),
+              child: const Text('Cancel'),
+            ),
             FilledButton(
               onPressed: () {
                 if (!formKey.currentState!.validate()) return;
-                bloc.add(BusinessPurchaseAdded(BusinessPurchase(
-                  id: 0,
-                  purchaseDate: purchaseDate,
-                  purchaseType: purchaseType,
-                  description: descriptionController.text,
-                  supplier: supplierController.text.isEmpty ? null : supplierController.text,
-                  amountExclGst: double.parse(amountController.text),
-                  gstAmount: double.parse(gstController.text),
-                  isCapitalAsset: isCapitalAsset,
-                  isTradingStockPurchase: isTradingStockPurchase,
-                )));
+                bloc.add(
+                  BusinessPurchaseAdded(
+                    BusinessPurchase(
+                      id: 0,
+                      purchaseDate: purchaseDate,
+                      purchaseType: purchaseType,
+                      description: descriptionController.text,
+                      supplier: supplierController.text.isEmpty
+                          ? null
+                          : supplierController.text,
+                      amountExclGst: double.parse(amountController.text),
+                      gstAmount: double.parse(gstController.text),
+                      isCapitalAsset: isCapitalAsset,
+                      isTradingStockPurchase: isTradingStockPurchase,
+                    ),
+                  ),
+                );
                 Navigator.pop(dialogContext);
               },
               child: const Text('Add'),
