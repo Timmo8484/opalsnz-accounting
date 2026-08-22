@@ -1,0 +1,2 @@
+-- Flyway SQL migrations for the opalsnz_accounting schema live in this folder.
+-- Phase 3 (Data model & migrations) adds the first versioned migration here, e.g. V1__init.sql.

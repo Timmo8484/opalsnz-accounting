@@ -24,6 +24,8 @@ simplified for a single-user internal tool.
 | Mapper layer | Folded into `.Service` project rather than a separate `.Mapper` project (small entity count doesn't justify it) |
 | Reports | Category totals / GST period summary / depreciation schedule for handing to an accountant; CSV export in scope, PDF export is a stretch goal only |
 | ACC levies | Not a separate module — ACC levy payments are recorded as a normal business expense entry (deductible), reducing net profit alongside income tax; no dedicated ACC entity |
+| .NET version | net10.0 (current LTS, matches installed SDKs) rather than opalsnz's net8.0 — EF Core packages pinned to 9.0.11 (and Pomelo.EntityFrameworkCore.MySql 9.0.0) since that's the latest Pomelo release, avoiding an EF Core 10/Pomelo 9 version mismatch |
+| Schema management | Db-first, matching opalsnz exactly: Flyway SQL migrations (`db/opalsnz_accounting/sql`) own the schema; EF Core models are regenerated via `scaffold-db.ps1` (`dotnet ef dbcontext scaffold`), not EF Core code-first migrations |
 
 ## Domain facts encoded (see `docs/tax/`)
 
@@ -48,19 +50,22 @@ Work proceeds in phases below. **Pause after each phase for review before starti
 - `docs/tax/home-office-expenses.md`
 - `docs/architecture-decisions.md`
 
-### Phase 2 — Repo & backend scaffold
-Mirror opalsnz top-level layout (`backend/`, `frontend/`, `db/`, `infrastructure/`).
-Backend solution `Opalsnz.Accounting.*` projects: `.Api` (controllers, Program.cs, self-issued JWT auth),
-`.Db` (EF Core DbContext + Models, MySQL via Pomelo), `.Model` (Dto/Requests), `.Service` (business logic
-incl. depreciation & GST calculators, and mapping).
+### Phase 2 — Repo & backend scaffold ✅
+Mirror opalsnz top-level layout (`backend/`, `db/`; `frontend/` and `infrastructure/` added in their
+respective phases). Backend solution `Backend.sln` with `Opalsnz.Accounting.Api/.Db/.Model/.Service`
+projects (net10.0), self-issued JWT auth (single user, PBKDF2 password hash, credential from
+config/env), Serilog, CORS, health check, EF Core + Pomelo MySQL wiring. Local dev MySQL + Flyway via
+`db/docker-compose.db.dev.yml`.
 
 ### Phase 3 — Data model & migrations
 Entities: `IncomeEntry`, `ExpenseCategory`, `HomeOfficeExpenseEntry`, `BusinessPurchase` (with an
 `IsTradingStockPurchase` flag for opal rough), `Asset`, `AssetDepreciationYear`, `TradingStockYear`
 (opening/closing stock value per tax year — see [docs/tax/trading-stock-and-startup-assets.md](docs/tax/trading-stock-and-startup-assets.md)),
 `HistoricalStockPurchase` (record-keeping only: logs the ~3 years of pre-business bank-statement
-purchases as evidence, not part of the deductible-cost calculation). EF Core migrations against MySQL,
-new schema on the existing DB server.
+purchases as evidence, not part of the deductible-cost calculation). Schema defined as Flyway SQL
+migrations against the local/dev MySQL (`db/opalsnz_accounting/sql`), then `Opalsnz.Accounting.Db`'s
+`AccountingContext`/models are regenerated via `scaffold-db.ps1` (db-first, not EF Core code-first
+migrations).
 
 ### Phase 4 — API endpoints
 CRUD controllers for each entity + a Reports controller: income summary by stream, home-office

@@ -1,0 +1,37 @@
+services:
+  opalsnz-accounting-db:
+    container_name: opalsnz-accounting-db
+    image: mysql:8.4
+
+    environment:
+      - MYSQL_ROOT_PASSWORD=${DATABASE_ROOT_PASSWORD:-devpassword}
+      - MYSQL_DATABASE=opalsnz_accounting
+      - MYSQL_USER=opalsnz_accounting
+      - MYSQL_PASSWORD=${DATABASE_PASSWORD:-devpassword}
+
+    ports:
+      - "3309:3306"
+
+    command: >
+      --character-set-server=utf8mb4
+      --collation-server=utf8mb4_unicode_520_ci
+
+  opalsnz-accounting-flyway:
+    container_name: opalsnz-accounting-flyway
+    image: flyway/flyway:latest
+
+    environment:
+      - FLYWAY_USER=root
+      - FLYWAY_PASSWORD=${DATABASE_ROOT_PASSWORD:-devpassword}
+      - FLYWAY_CONNECT_RETRIES=20
+      - FLYWAY_LOCATIONS=filesystem:/flyway/sql
+      - FLYWAY_URL=jdbc:mysql://opalsnz-accounting-db:3306/opalsnz_accounting?characterEncoding=UTF-8&allowPublicKeyRetrieval=true
+      - FLYWAY_DEFAULT_SCHEMA=opalsnz_accounting
+
+    volumes:
+      - ./opalsnz_accounting/sql:/flyway/sql
+
+    depends_on:
+      - opalsnz-accounting-db
+
+    command: info migrate info -outOfOrder=true

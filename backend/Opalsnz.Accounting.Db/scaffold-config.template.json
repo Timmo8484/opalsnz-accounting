@@ -1,0 +1,15 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "description": "Database scaffold configuration template. Copy to scaffold-config.json (git-ignored) and update with your credentials.",
+  "ConnectionStrings": {
+    "Development": "Server=localhost;Database=opalsnz_accounting;Port=3309;Uid=root;Pwd=devpassword;"
+  },
+  "ScaffoldOptions": {
+    "Provider": "Pomelo.EntityFrameworkCore.MySql",
+    "OutputDir": "Models",
+    "ContextDir": ".",
+    "ContextName": "AccountingContext",
+    "UseDatabaseNames": true,
+    "Force": true
+  }
+}

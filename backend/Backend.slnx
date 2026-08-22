@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="Opalsnz.Accounting.Api/Opalsnz.Accounting.Api.csproj" />
+  <Project Path="Opalsnz.Accounting.Db/Opalsnz.Accounting.Db.csproj" />
+  <Project Path="Opalsnz.Accounting.Model/Opalsnz.Accounting.Model.csproj" />
+  <Project Path="Opalsnz.Accounting.Service/Opalsnz.Accounting.Service.csproj" />
+</Solution>
