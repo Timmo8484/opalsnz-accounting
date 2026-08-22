@@ -57,19 +57,25 @@ projects (net10.0), self-issued JWT auth (single user, PBKDF2 password hash, cre
 config/env), Serilog, CORS, health check, EF Core + Pomelo MySQL wiring. Local dev MySQL + Flyway via
 `db/docker-compose.db.dev.yml`.
 
-### Phase 3 — Data model & migrations
+### Phase 3 — Data model & migrations ✅
 Entities: `IncomeEntry`, `ExpenseCategory`, `HomeOfficeExpenseEntry`, `BusinessPurchase` (with an
 `IsTradingStockPurchase` flag for opal rough), `Asset`, `AssetDepreciationYear`, `TradingStockYear`
 (opening/closing stock value per tax year — see [docs/tax/trading-stock-and-startup-assets.md](docs/tax/trading-stock-and-startup-assets.md)),
 `HistoricalStockPurchase` (record-keeping only: logs the ~3 years of pre-business bank-statement
 purchases as evidence, not part of the deductible-cost calculation). Schema defined as Flyway SQL
-migrations against the local/dev MySQL (`db/opalsnz_accounting/sql`), then `Opalsnz.Accounting.Db`'s
-`AccountingContext`/models are regenerated via `scaffold-db.ps1` (db-first, not EF Core code-first
-migrations).
+migrations against the local/dev MySQL (`db/opalsnz_accounting/sql/V1__create_core_schema.sql`, plus
+`V2__seed_expense_categories.sql` seeding the example home-office categories/% from
+[docs/tax/home-office-expenses.md](docs/tax/home-office-expenses.md)), then `Opalsnz.Accounting.Db`'s
+`AccountingContext`/models regenerated via `scaffold-db.ps1` (db-first, not EF Core code-first
+migrations) — verified against the local dev MySQL container, solution builds clean.
 
-### Phase 4 — API endpoints
+### Phase 4 — API endpoints & calculator unit tests
 CRUD controllers for each entity + a Reports controller: income summary by stream, home-office
 claimable summary, GST period summary (output GST − input GST), depreciation schedule, CSV export.
+A new `Opalsnz.Accounting.Tests` project is added here (xUnit), with unit tests written alongside each
+calculator as it's built: GST content calc, home-office claimable calc, DV/SL depreciation calc
+(incl. part-year apportionment), low-value asset (≤$1,000) immediate-expense logic, and the trading
+stock deductible-cost calc (opening + purchases − closing).
 
 ### Phase 5 — Frontend (Flutter Web)
 Scaffold app with `lib/bloc/{income,homeOfficeExpense,businessPurchase,asset,report,auth}`, `lib/pages`,
@@ -81,11 +87,11 @@ Docker Compose (dev + production) reusing opalsnz's nginx/Docker patterns, deplo
 Proxmox/Windows Server infra. Decide access path (internal-only/VPN recommended given sensitive
 financial data vs a public subdomain).
 
-### Phase 7 — Verification
-Unit tests: GST content calc, home-office claimable calc, DV/SL depreciation calc, low-value asset
-threshold logic. Manual pass: one income entry per stream, one home-office expense per category, one
-capital asset purchase >$1,000 and one ≤$1,000 (confirm immediate-expense flag), generate a GST-period
-report and an annual summary, export CSV.
+### Phase 7 — Final verification
+Manual pass through the running app: one income entry per stream, one home-office expense per
+category, one capital asset purchase >$1,000 and one ≤$1,000 (confirm immediate-expense flag), generate
+a GST-period report and an annual summary, export CSV. Confirm the Phase 4 unit test suite still passes
+end-to-end against the finished app.
 
 ## Reference files (opalsnz patterns being reused)
 

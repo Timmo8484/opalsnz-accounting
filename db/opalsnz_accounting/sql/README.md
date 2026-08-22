@@ -1,2 +1,7 @@
--- Flyway SQL migrations for the opalsnz_accounting schema live in this folder.
--- Phase 3 (Data model & migrations) adds the first versioned migration here, e.g. V1__init.sql.
+# SQL migrations
+
+Flyway SQL migrations for the `opalsnz_accounting` schema live in this folder.
+
+Naming: `V<version>__<description>.sql`, applied in order. Never edit an already-applied migration —
+add a new `Vn` file instead. After adding a migration, regenerate the EF Core models with
+`../../backend/Opalsnz.Accounting.Db/scaffold-db.ps1`.

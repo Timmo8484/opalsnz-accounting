@@ -4,10 +4,10 @@ services:
     image: mysql:8.4
 
     environment:
-      - MYSQL_ROOT_PASSWORD=${DATABASE_ROOT_PASSWORD:-devpassword}
+      - MYSQL_ROOT_PASSWORD=${ACCOUNTING_DB_ROOT_PASSWORD:-devpassword}
       - MYSQL_DATABASE=opalsnz_accounting
       - MYSQL_USER=opalsnz_accounting
-      - MYSQL_PASSWORD=${DATABASE_PASSWORD:-devpassword}
+      - MYSQL_PASSWORD=${ACCOUNTING_DB_PASSWORD:-devpassword}
 
     ports:
       - "3309:3306"
@@ -22,7 +22,7 @@ services:
 
     environment:
       - FLYWAY_USER=root
-      - FLYWAY_PASSWORD=${DATABASE_ROOT_PASSWORD:-devpassword}
+      - FLYWAY_PASSWORD=${ACCOUNTING_DB_ROOT_PASSWORD:-devpassword}
       - FLYWAY_CONNECT_RETRIES=20
       - FLYWAY_LOCATIONS=filesystem:/flyway/sql
       - FLYWAY_URL=jdbc:mysql://opalsnz-accounting-db:3306/opalsnz_accounting?characterEncoding=UTF-8&allowPublicKeyRetrieval=true
