@@ -82,10 +82,20 @@ income entry, create home-office expense entry (confirmed $220 @ 50% → $110 cl
 matching the worked example in the docs), income summary and GST period summary reports.
 CSV export was not built — see Further considerations.
 
-### Phase 5 — Frontend (Flutter Web)
-Scaffold app with `lib/bloc/{income,homeOfficeExpense,businessPurchase,asset,report,auth}`, `lib/pages`,
-`lib/services` (API client). Pages: Login, Dashboard, Income List, Home Office Expenses, Business
-Purchases, Assets & Depreciation, Reports, Settings.
+### Phase 5 — Frontend (Flutter Web) ✅
+Scaffolded `frontend/opalsnz_accounting_app` (Flutter 3.32.8, matching opalsnz's version) with a single
+app package rather than opalsnz's 3-package melos monorepo (simplified per architecture-decisions.md).
+`lib/models` (Dart classes mirroring the API DTOs), `lib/services` (`ApiClient` with bearer token
+attachment + one service per domain), `lib/bloc/{auth,income,expense_category,home_office_expense,
+business_purchase,asset,trading_stock,report}` (event/state/bloc per domain, matching opalsnz's
+bloc-architecture.md pattern), `lib/pages` (Login, Dashboard, Income List, Home Office Expenses,
+Business Purchases, Assets & Depreciation, Trading Stock, Reports, Settings), `AppShell` with side nav.
+`flutter analyze` clean, `flutter build web` succeeds. Smoke-tested end-to-end: dev DB + API + frontend
+all running together, login page renders correctly in a real browser (screenshot-verified). Full
+click-through (typing into fields, submitting forms) wasn't automatable from this session — Flutter's
+CanvasKit web renderer doesn't expose real DOM inputs for automation tools without enabling in-app
+accessibility first. **Manual click-through is the first thing to do in Phase 7.**
+CSV/PDF export UI, and edit (vs. add/delete) forms were not built — see Further considerations.
 
 ### Phase 6 — Infrastructure & deployment
 Docker Compose (dev + production) reusing opalsnz's nginx/Docker patterns, deployed to existing
@@ -93,10 +103,11 @@ Proxmox/Windows Server infra. Decide access path (internal-only/VPN recommended 
 financial data vs a public subdomain).
 
 ### Phase 7 — Final verification
-Manual pass through the running app: one income entry per stream, one home-office expense per
-category, one capital asset purchase >$1,000 and one ≤$1,000 (confirm immediate-expense flag), generate
-a GST-period report and an annual summary, export CSV. Confirm the Phase 4 unit test suite still passes
-end-to-end against the finished app.
+**Manual click-through of the running app is the priority here** (not done yet — see Phase 5 note):
+log in, add one income entry per stream, one home-office expense per category, one capital asset
+purchase >$1,000 and one ≤$1,000 (confirm immediate-expense flag), add a trading stock year, generate
+a GST-period report and an annual summary. Confirm the Phase 4 unit test suite still passes end-to-end
+against the finished app.
 
 ## Reference files (opalsnz patterns being reused)
 
@@ -112,3 +123,5 @@ end-to-end against the finished app.
 2. PDF export for accountant handoff — stretch goal, not committed.
 3. Trading stock register is now designed (see Phase 3 and [docs/tax/trading-stock-and-startup-assets.md](docs/tax/trading-stock-and-startup-assets.md)), but the **opening value figure and valuation method** (cost vs market value) for the ~$50k of pre-business opal rough still needs your accountant's confirmation before that first `TradingStockYear` record is entered — not blocking the build, just don't enter a real opening value until confirmed.
 4. CSV export endpoints (Reports) were not built in Phase 4 — add alongside/after the frontend Reports page in Phase 5 once the exact export shape needed is clearer.
+5. Frontend "edit" forms weren't built (only add/delete) — the API supports `PUT` on every entity, so this is a frontend-only gap to close once the basic flows are confirmed useful.
+6. CSV export UI (frontend) still pending on item 4 above.

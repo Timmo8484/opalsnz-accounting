@@ -10,7 +10,7 @@ vs dropped.
 ## Project structure
 
 - **Backend** — ASP.NET Core 10 API (`/backend`)
-- **Frontend** — Flutter web application (`/frontend`) — added in Phase 5
+- **Frontend** — Flutter web application (`/frontend`)
 - **Database** — MySQL configuration (`/db`)
 - **Infrastructure** — Deployment scripts and configuration (`/infrastructure`) — added in Phase 6
 - **docs** — Tax cheatsheets and architecture notes (`/docs`)
@@ -21,9 +21,10 @@ See [plan.md](plan.md) for the full build plan, decisions, and phase breakdown.
 
 - **Backend**: ASP.NET Core 10, Entity Framework Core (Pomelo MySQL provider)
 - **Database**: MySQL 8, schema managed with Flyway SQL migrations
-- **Frontend**: Flutter web (planned, Phase 5)
+- **Frontend**: Flutter web (BLoC state management)
 - **Auth**: Single-user, self-issued JWT (no third-party auth provider)
 
 ## Development
 
-See [backend/README.md](backend/README.md) for backend setup instructions.
+See [backend/README.md](backend/README.md) for backend setup instructions and
+[frontend/opalsnz_accounting_app/README.md](frontend/opalsnz_accounting_app/README.md) for the frontend.
