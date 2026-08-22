@@ -3,4 +3,5 @@
   <Project Path="Opalsnz.Accounting.Db/Opalsnz.Accounting.Db.csproj" />
   <Project Path="Opalsnz.Accounting.Model/Opalsnz.Accounting.Model.csproj" />
   <Project Path="Opalsnz.Accounting.Service/Opalsnz.Accounting.Service.csproj" />
+  <Project Path="Opalsnz.Accounting.Tests/Opalsnz.Accounting.Tests.csproj" />
 </Solution>

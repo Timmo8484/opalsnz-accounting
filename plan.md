@@ -70,12 +70,17 @@ migrations against the local/dev MySQL (`db/opalsnz_accounting/sql/V1__create_co
 migrations) — verified against the local dev MySQL container, solution builds clean.
 
 ### Phase 4 — API endpoints & calculator unit tests
+### Phase 4 — API endpoints & calculator unit tests ✅
 CRUD controllers for each entity + a Reports controller: income summary by stream, home-office
-claimable summary, GST period summary (output GST − input GST), depreciation schedule, CSV export.
-A new `Opalsnz.Accounting.Tests` project is added here (xUnit), with unit tests written alongside each
-calculator as it's built: GST content calc, home-office claimable calc, DV/SL depreciation calc
-(incl. part-year apportionment), low-value asset (≤$1,000) immediate-expense logic, and the trading
-stock deductible-cost calc (opening + purchases − closing).
+claimable summary, GST period summary (output GST − input GST), depreciation schedule. `Opalsnz.Accounting.Tests`
+(xUnit) added with 19 passing unit tests for the calculators: GST content, home-office claimable
+amount/GST, DV/SL depreciation (incl. part-year apportionment and the "never below zero" book-value
+rule), low-value asset (≤$1,000) threshold, and the trading stock deductible-cost calc. Secure-by-default
+authorization added (`FallbackPolicy` requires auth on every endpoint unless `[AllowAnonymous]`), and
+enums now serialize as strings over the API. Smoke-tested end-to-end against the dev DB: login, create
+income entry, create home-office expense entry (confirmed $220 @ 50% → $110 claimable / $14.35 GST,
+matching the worked example in the docs), income summary and GST period summary reports.
+CSV export was not built — see Further considerations.
 
 ### Phase 5 — Frontend (Flutter Web)
 Scaffold app with `lib/bloc/{income,homeOfficeExpense,businessPurchase,asset,report,auth}`, `lib/pages`,
@@ -106,3 +111,4 @@ end-to-end against the finished app.
 1. Deployment access path — internal-only/VPN vs public subdomain.
 2. PDF export for accountant handoff — stretch goal, not committed.
 3. Trading stock register is now designed (see Phase 3 and [docs/tax/trading-stock-and-startup-assets.md](docs/tax/trading-stock-and-startup-assets.md)), but the **opening value figure and valuation method** (cost vs market value) for the ~$50k of pre-business opal rough still needs your accountant's confirmation before that first `TradingStockYear` record is entered — not blocking the build, just don't enter a real opening value until confirmed.
+4. CSV export endpoints (Reports) were not built in Phase 4 — add alongside/after the frontend Reports page in Phase 5 once the exact export shape needed is clearer.

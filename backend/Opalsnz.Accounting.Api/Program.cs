@@ -1,10 +1,18 @@
 using System.Text;
+using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.AspNetCore.Authorization;
 using Opalsnz.Accounting.Db;
 using Opalsnz.Accounting.Model.Auth;
+using Opalsnz.Accounting.Service.Assets;
 using Opalsnz.Accounting.Service.Auth;
+using Opalsnz.Accounting.Service.BusinessPurchases;
+using Opalsnz.Accounting.Service.HomeOfficeExpenses;
+using Opalsnz.Accounting.Service.Income;
+using Opalsnz.Accounting.Service.Reports;
+using Opalsnz.Accounting.Service.TradingStock;
 using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -18,7 +26,8 @@ builder.Host.UseSerilog((context, services, configuration) => configuration
 
 // Add services to the container.
 
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+    .AddJsonOptions(options => options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()));
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 
@@ -48,6 +57,16 @@ builder.Services.AddSingleton<IPasswordHasher, PasswordHasher>();
 builder.Services.AddSingleton<IJwtTokenService, JwtTokenService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 
+builder.Services.AddScoped<IIncomeService, IncomeService>();
+builder.Services.AddScoped<IExpenseCategoryService, ExpenseCategoryService>();
+builder.Services.AddScoped<IHomeOfficeExpenseService, HomeOfficeExpenseService>();
+builder.Services.AddScoped<IBusinessPurchaseService, BusinessPurchaseService>();
+builder.Services.AddScoped<IAssetService, AssetService>();
+builder.Services.AddScoped<IAssetDepreciationService, AssetDepreciationService>();
+builder.Services.AddScoped<ITradingStockService, TradingStockService>();
+builder.Services.AddScoped<IHistoricalStockPurchaseService, HistoricalStockPurchaseService>();
+builder.Services.AddScoped<IReportService, ReportService>();
+
 var jwtOptions = builder.Configuration.GetSection(JwtOptions.SectionName).Get<JwtOptions>()
     ?? throw new InvalidOperationException("Jwt configuration section is missing");
 
@@ -66,7 +85,13 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         };
     });
 
-builder.Services.AddAuthorization();
+// Secure by default - every endpoint requires auth unless explicitly marked [AllowAnonymous].
+builder.Services.AddAuthorization(options =>
+{
+    options.FallbackPolicy = new AuthorizationPolicyBuilder()
+        .RequireAuthenticatedUser()
+        .Build();
+});
 
 var app = builder.Build();
 
