@@ -116,12 +116,31 @@ Not done (see Further considerations): an actual production MySQL Compose file (
 exists), backup scripts, and the real deployment to the Proxmox/Windows Server boxes themselves
 (no access to that infra from this session — the artifacts and guide are ready for you to run there).
 
-### Phase 7 — Final verification
-**Manual click-through of the running app is the priority here** (not done yet — see Phase 5 note):
-log in, add one income entry per stream, one home-office expense per category, one capital asset
-purchase >$1,000 and one ≤$1,000 (confirm immediate-expense flag), add a trading stock year, generate
-a GST-period report and an annual summary. Confirm the Phase 4 unit test suite still passes end-to-end
-against the finished app.
+### Phase 7 — Final verification ✅
+Unit test suite re-run after all Phase 6 changes: **19/19 passing**.
+
+Full checklist driven end-to-end against the running dev stack (DB + API + frontend), verifying both
+the API responses and the calculators against known worked examples:
+- Login (both manually by you in the browser, confirmed working, and via the API).
+- Income entry per stream — added Software Development ($2,000 + $300 GST) and confirmed Opal Sales
+  from earlier testing; income summary report totals matched exactly.
+- Home-office expense per category — one entry per all 5 categories at $200 gross; claimable
+  amounts/GST matched the documented formulas in every case (e.g. Power: $200 × 50% = $100 claimable,
+  $100 × 3/23 = $13.04 GST).
+- Capital asset >$1,000 (Diamond cabbing machine, $2,400) — `isLowValueWriteoff: false` as expected;
+  calculated depreciation for 11/12 months owned: $2,400 × 20% × 11/12 = **$440**, closing value
+  **$1,960** — matches the DV formula exactly.
+- Asset ≤$1,000 (Hand-held polishing tool, $450) — `isLowValueWriteoff: true` as expected.
+- Trading stock year — first year created with a placeholder $50,000 opening value/Cost method
+  (**do not treat this as final — still needs your accountant's confirmation**, see open question #3).
+- GST period report — output GST $300, input GST $473.23 (home-office claimable GST + business
+  purchase GST), net GST **-$173.23 (refund)** — arithmetic checked and correct.
+- Depreciation schedule report — correctly lists the capped asset's $440 depreciation for the year.
+
+Not done: clicking through the Flutter UI itself for every flow (see Phase 5's CanvasKit automation
+limitation) — you've manually confirmed login + Settings render correctly with live data; the rest of
+the pages read from the same verified API so are very likely correct, but a manual click-through of
+Income/Home Office/Assets/Trading Stock/Reports pages in your own session is still worth doing.
 
 ## Reference files (opalsnz patterns being reused)
 
